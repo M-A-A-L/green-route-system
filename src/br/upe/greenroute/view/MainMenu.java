@@ -1,16 +1,20 @@
 package br.upe.greenroute.view;
+
 import java.util.Scanner;
+
 public class MainMenu {
     private Scanner scanner;
     private VehicleMenu vehicleMenu;
     private ChargingStationMenu chargingStationMenu;
     private CityMenu cityMenu;
+
     public MainMenu() {
         this.scanner = new Scanner(System.in);
         vehicleMenu = new VehicleMenu(scanner);
         chargingStationMenu = new ChargingStationMenu(scanner);
         cityMenu = new CityMenu(scanner);
     }
+
     public void showMenu() {
         int opcao;
         boolean executando = true;
@@ -49,5 +53,20 @@ public class MainMenu {
                System.out.println("Digite uma opção válida!");
            }
         }
+    }
+}
+
+public class Pessoa {
+    private String nome;
+    private int idade;
+
+    public Pessoa(String nome, int idade) {
+        this.nome = nome;
+        this.idade = idade;
+    }
+
+    public void exibirDados() {
+        System.out.println("Nome: " + nome);
+        System.out.println("Idade: " + idade);
     }
 }
