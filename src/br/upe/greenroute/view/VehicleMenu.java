@@ -2,8 +2,10 @@ package br.upe.greenroute.view;
 import java.util.Scanner;
 public class VehicleMenu {
     private Scanner scanner;
-    public VehicleMenu(Scanner scanner) {
+    private VehicleView view;
+    public VehicleMenu(Scanner scanner, VehicleView vehicleView) {
         this.scanner = scanner;
+        this.view = vehicleView;
     }
     public void showMenu() {
         int opcao;
@@ -18,7 +20,7 @@ public class VehicleMenu {
             System.out.println("0. Voltar para o menu principal");
             opcao = scanner.nextInt();
             if (opcao == 1) {
-                //cadastrar veiculo
+                view.requestDataForCreate();
             } else if (opcao == 2) {
                 //atualizar veiculo
             } else if (opcao == 3) {
