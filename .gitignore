@@ -34,3 +34,30 @@ gen/
 .project
 .settings/
 bin/
+src/
+└── br/
+    └── upe/
+        └── greenroute/
+            ├── model/
+            │   ├── Veiculo.java
+            │   ├── VeiculoEletrico.java
+            │   ├── VeiculoHibrido.java
+            │   ├── Cidade.java
+            │   └── Eletroposto.java
+            │
+            ├── repository/
+            │   ├── VeiculoRepository.java
+            │   ├── CidadeRepository.java
+            │   └── EletropostoRepository.java
+            │
+            ├── controller/
+            │   ├── VeiculoController.java
+            │   ├── CidadeController.java
+            │   └── EletropostoController.java
+            │
+            └── view/
+                ├── MainMenu.java
+                ├── VehicleMenu.java
+                ├── CityMenu.java
+                └── ChargingStationMenu.java
+                
