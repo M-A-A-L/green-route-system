@@ -1,25 +1,9 @@
 package br.upe.greenroute.view;
 import java.util.Scanner;
-public class ChargingStationMenu extends BaseView{
+public class ChargingStationMenu{
     private Scanner scanner;
     public ChargingStationMenu(Scanner scanner) {
         this.scanner = scanner;
-    }
-    @Override
-    public void requestDataForCreate() {
-
-    }
-    @Override
-    public void requestDataForRead() {
-
-    }
-    @Override
-    public void requestDataForUpdate() {
-
-    }
-    @Override
-    public void requestDataForDelete() {
-
     }
     public void showMenu() {
         int opcao;

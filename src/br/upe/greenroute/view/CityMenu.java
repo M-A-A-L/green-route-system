@@ -1,25 +1,9 @@
 package br.upe.greenroute.view;
 import java.util.Scanner;
-public class CityMenu extends BaseView{
+public class CityMenu{
     private Scanner scanner;
     public CityMenu(Scanner scanner) {
         this.scanner = scanner;
-    }
-    @Override
-    public void requestDataForCreate() {
-
-    }
-    @Override
-    public void requestDataForRead() {
-
-    }
-    @Override
-    public void requestDataForUpdate() {
-
-    }
-    @Override
-    public void requestDataForDelete() {
-
     }
     public void showMenu() {
         int opcao;
