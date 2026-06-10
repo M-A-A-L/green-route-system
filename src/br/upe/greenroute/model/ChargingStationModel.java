@@ -6,17 +6,17 @@ public class ChargingStationModel {
     private String location;
     private int cityId;
     private String availableConnectorsType;
-    private double chargingPowerKWh;
+    private double chargingPowerKW;
     private double pricePerKWh;
     private int availableVacancies;
 
-    public ChargingStationModel(int id, String name, String location, int cityId, String availableConnectorsType, double chargingPowerKWh, double pricePerKWh, int availableVacancies) {
+    public ChargingStationModel(int id, String name, String location, int cityId, String availableConnectorsType, double chargingPowerKW, double pricePerKWh, int availableVacancies) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.cityId = cityId;
         this.availableConnectorsType = availableConnectorsType;
-        this.chargingPowerKWh = chargingPowerKWh;
+        this.chargingPowerKW = chargingPowerKW;
         this.pricePerKWh = pricePerKWh;
         this.availableVacancies = availableVacancies;
     }
@@ -41,9 +41,9 @@ public class ChargingStationModel {
 
     public void setAvailableConnectorsType(String availableConnectorsType) {this.availableConnectorsType = availableConnectorsType;}
 
-    public double getChargingPowerKWh() {return chargingPowerKWh;}
+    public double getChargingPowerKW() {return chargingPowerKW;}
 
-    public void setChargingPowerKWh(double chargingPowerKWh) {this.chargingPowerKWh = chargingPowerKWh;}
+    public void setChargingPowerKW(double chargingPowerKW) {this.chargingPowerKW = chargingPowerKW;}
 
     public double getPricePerKWh() {return pricePerKWh;}
 

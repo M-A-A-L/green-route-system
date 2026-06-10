@@ -5,7 +5,7 @@ public class VehicleView extends BaseView{
     public VehicleView(Scanner scanner) {
         this.scanner = scanner;
     }
-    public int requestVehicleType() {
+    private int requestVehicleType() {
         System.out.println("Digite o tipo de veiculo:");
         System.out.println("1-Eletrico");
         System.out.println("2-Hibrido");
@@ -41,14 +41,14 @@ public class VehicleView extends BaseView{
             requestDataForCreateHybridVehicle(vehicleModel, maximumAutonomy, currentBatteryCharge, consumptionKWhPerKm, fullRechargeTime);
         }
     }
-    public void requestDataForCreateElectricVehicle(String model, double autonomy, double baterryCharge, double consumption, int rechargeTime) {
+    private void requestDataForCreateElectricVehicle(String model, double autonomy, double baterryCharge, double consumption, int rechargeTime) {
         System.out.println("Digite o tipo de conector: )");
         String connectorType = scanner.nextLine();
         System.out.println("Digite o tempo de recarga rapida (em minutos) em carregadores de alta potencia: ");
         int fastCharging = scanner.nextInt();
         //controller.cadastrarEletrico
     }
-    public void requestDataForCreateHybridVehicle(String model, double autonomy, double baterryCharge, double consumption, int rechargeTime) {
+    private void requestDataForCreateHybridVehicle(String model, double autonomy, double baterryCharge, double consumption, int rechargeTime) {
         System.out.println("Digite a capacidade do tanque de combustivel (em litros): ");
         double fuelTankCapacity = scanner.nextDouble();
         scanner.nextLine();
