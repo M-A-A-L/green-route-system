@@ -1,20 +1,34 @@
 package br.upe.greenroute.view;
 
+import br.upe.greenroute.controller.CityController;
+import br.upe.greenroute.repository.CityRepository;
+import br.upe.greenroute.repository.VehicleRepository;
+
 import java.util.Scanner;
 
 public class MainMenu {
     private final Scanner scanner;
     private VehicleView vehicleView;
     private VehicleMenu vehicleMenu;
-    private ChargingStationMenu chargingStationMenu;
+    private VehicleRepository vehicleRepository;
+    private CityController cityController;
+    private CityView cityView;
     private CityMenu cityMenu;
+    private CityRepository cityRepository;
+    private ChargingStationMenu chargingStationMenu;
 
-    public MainMenu() {
-        this.scanner = new Scanner(System.in);
-        vehicleView = new VehicleView(scanner);
-        vehicleMenu = new VehicleMenu(scanner, vehicleView);
-        chargingStationMenu = new ChargingStationMenu(scanner);
-        cityMenu = new CityMenu(scanner);
+    public MainMenu(Scanner scanner, VehicleView vehicleView, VehicleRepository vehicleRepository,
+                    CityView cityView, CityRepository cityRepository, CityController cityController
+                    ) {
+        this.scanner = scanner;
+        this.vehicleView = vehicleView;
+        this.vehicleRepository = vehicleRepository;
+        this.vehicleMenu = new VehicleMenu(scanner, vehicleView);
+        this.cityView = cityView;
+        this.cityController = cityController;
+        this.cityRepository = cityRepository;
+        this.cityMenu = new CityMenu(scanner,cityView, cityController);
+        this.chargingStationMenu = new ChargingStationMenu(scanner);
     }
 
     public void showMenu() {
@@ -41,16 +55,16 @@ public class MainMenu {
            System.out.println("3. Gerenciar cidades");
            System.out.println("0. Sair");
            opcao = scanner.nextInt();
+           scanner.nextLine();
            if (opcao == 1){
-               vehicleMenu.showMenu();
+               //vehicleMenu.showMenu();
            }else if (opcao == 2) {
-               chargingStationMenu.showMenu();
+               //chargingStationMenu.showMenu();
            }else if (opcao == 3) {
                cityMenu.showMenu();
            }else if (opcao == 0) {
                System.out.println("Encerrando o programa . . .");
                executando = false;
-               scanner.close();
            }else {
                System.out.println("Digite uma opção válida!");
            }
