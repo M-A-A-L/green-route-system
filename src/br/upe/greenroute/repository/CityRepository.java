@@ -5,10 +5,11 @@ import br.upe.greenroute.model.CityModel;
 public class CityRepository {
     private CityModel[] cities;
     private int count;
+    private int id = 1;
 
     public CityRepository() {
         cities = new CityModel[5];
-        this.count = 0;
+        count = 0;
     }
 
     private void expandArray() {
@@ -23,10 +24,12 @@ public class CityRepository {
         if (this.count == cities.length) {
             expandArray();
         }
+        city.setId(this.id);
         cities[this.count++] = city;
+        this.id++;
     }
 
-    public CityModel searchByID(int id) {
+    public CityModel searchById(int id) {
         for (int i = 0; i < this.count; i++) {
             if (cities[i].getId() == id) {
                 return cities[i];
@@ -34,7 +37,6 @@ public class CityRepository {
         }
         return null;
     }
-
     public CityModel[] searchByState(String state) {
         CityModel[] citiesByState = new CityModel[this.count];
         int count = 0;
@@ -50,17 +52,15 @@ public class CityRepository {
         return finalCitiesByState;
     }
     public boolean update(CityModel updateCity) {
-        boolean foundTheCity = false;
         for (int i = 0; i < this.count; i++) {
             if (cities[i].getId()==updateCity.getId()) {
                 cities[i] = updateCity;
-                foundTheCity=true;
+                return true;
             }
         }
-        return foundTheCity;
+        return false;
     }
     public boolean deleteCityById(int id) {
-        boolean foundTheId = false;
         for (int i = 0; i < this.count; i++) {
             if (cities[i].getId() == id) {
                 for (int j = i; j < this.count - 1; j++) {
@@ -68,9 +68,16 @@ public class CityRepository {
                 }
                 cities[this.count - 1] = null;
                 this.count--;
-                foundTheId = true;
+                return true;
             }
         }
-        return foundTheId;
+        return false;
+    }
+    public CityModel[] getCities() {
+        return cities;
+    }
+
+    public int getCount() {
+        return count;
     }
 }

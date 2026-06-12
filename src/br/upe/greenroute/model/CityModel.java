@@ -7,10 +7,13 @@ public class CityModel {
     private double capitalDistance;
 
     public CityModel(int id, String name, String state, double capitalDistance) {
+        this(name, state, capitalDistance);
         this.id = id;
+    }
+    public CityModel(String name, String state, double capitalDistance) {
         this.name = name;
         this.state = state;
-        this.capitalDistance = capitalDistance;
+        setCapitalDistance(capitalDistance);
     }
 
     public int getId() {return id;}
@@ -28,5 +31,9 @@ public class CityModel {
 
     public double getCapitalDistance() {return capitalDistance;}
 
-    public void setCapitalDistance(double capitalDistance) {this.capitalDistance = capitalDistance;}
+    public void setCapitalDistance(double capitalDistance) {
+        if (capitalDistance >= 0) {
+            this.capitalDistance = capitalDistance;
+        }
+    }
 }
