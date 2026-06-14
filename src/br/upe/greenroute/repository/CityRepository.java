@@ -60,7 +60,7 @@ public class CityRepository {
         }
         return false;
     }
-    public boolean deleteCityById(int id) {
+    public boolean deleteById(int id) {
         for (int i = 0; i < this.count; i++) {
             if (cities[i].getId() == id) {
                 for (int j = i; j < this.count - 1; j++) {

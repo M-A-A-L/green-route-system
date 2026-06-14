@@ -12,12 +12,15 @@ public class CityController extends BaseController{
         this.view = view;
     }
     public void addCity (String name,String state, String capitalDistanceStr) {
-        if ((name == null || name.isBlank()) || (state == null || state.isBlank()) || (capitalDistanceStr == null || capitalDistanceStr.isBlank())) {
-            view.displayError("Nenhum dado pode estar vazio!");
-            return;
+        String error = null;
+        if (error == null) {
+            error = isAnyBlank(name, state, capitalDistanceStr);
         }
-        if (!validDouble(capitalDistanceStr)) {
-            view.displayError("A distância deve conter apenas números e pontos");
+        if (error == null) {
+            error = isDouble(capitalDistanceStr, "A distância deve ser um valor decimal");
+        }
+        if (error != null) {
+            view.displayError(error);
             return;
         }
         double capitalDistance = Double.parseDouble(capitalDistanceStr);
@@ -54,10 +57,10 @@ public class CityController extends BaseController{
                     if(capitalDistance >= 0) {
                         cityFound.setCapitalDistance(capitalDistance);
                     }else {
-                        view.displayError("A distância da capital deve ser maior que zero!");
+                        view.displayError("A distância da capital deve ser maior que zero! (Será mantido o valor anterior)");
                     }
                 }else {
-                    view.displayError("O formato da nova distância é invalido!");
+                    view.displayError("O formato da nova distância é invalido! (Será mantido o valor anterior)");
                 }
             }
             boolean result = repository.update(cityFound);
@@ -72,7 +75,7 @@ public class CityController extends BaseController{
         }
     }
     public void deleteCityById(int id) {
-        boolean result = repository.deleteCityById(id);
+        boolean result = repository.deleteById(id);
         if (result) {
             view.displayMessage("Cidade deletada com sucesso!");
         }else {

@@ -4,13 +4,13 @@ import br.upe.greenroute.controller.CityController;
 import java.util.Scanner;
 public class CityMenu extends BaseMenu {
     private final Scanner scanner;
-    private final CityView cityView;
-    private final CityController cityController;
+    private final CityView view;
+    private final CityController controller;
 
     public CityMenu(Scanner scanner,CityView cityView, CityController cityController) {
         this.scanner = scanner;
-        this.cityView = cityView;
-        this.cityController = cityController;
+        this.view = cityView;
+        this.controller = cityController;
     }
     @Override
     public void showMenu() {
@@ -23,6 +23,7 @@ public class CityMenu extends BaseMenu {
             System.out.println("2. Atualizar cidade");
             System.out.println("3. Buscar cidade");
             System.out.println("4. Remover cidade");
+            System.out.println("5. Listar cidades");
             System.out.println("0. Voltar para o menu principal");
             opcao = scanner.nextInt();
             switch (opcao) {
@@ -30,12 +31,12 @@ public class CityMenu extends BaseMenu {
                 case 2 -> requestDataForUpdate();
                 case 3 -> requestDataForRead();
                 case 4 -> requestDataForDelete();
-                case 5 -> cityController.listCities();
+                case 5 -> controller.listCities();
                 case 0 -> {
                     System.out.println("Voltando . . .");
                     executando = false;
                 }
-                default -> cityView.displayError("Digite uma opção válida!");
+                default -> view.displayError("Digite uma opção válida!");
             }
         }
     }
@@ -48,14 +49,14 @@ public class CityMenu extends BaseMenu {
         String state = scanner.nextLine();
         System.out.println("Digite a distância desta cidade para a capital do estado: ");
         String capitalDistanceStr = scanner.nextLine();
-        cityController.addCity(name, state, capitalDistanceStr);
+        controller.addCity(name, state, capitalDistanceStr);
     }
     @Override
     public void requestDataForRead() {
         System.out.println("Digite o id da cidade: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-        cityController.searchCityById(id);
+        controller.searchCityById(id);
     }
     @Override
     public void requestDataForUpdate() {
@@ -68,13 +69,13 @@ public class CityMenu extends BaseMenu {
         String state = scanner.nextLine();
         System.out.println("Digite a distância desta cidade para a capital do estado (Enter para manter): ");
         String capitalDistanceStr = scanner.nextLine();
-        cityController.updateCity(id, name, state, capitalDistanceStr);
+        controller.updateCity(id, name, state, capitalDistanceStr);
     }
     @Override
     public void requestDataForDelete() {
         System.out.println("Digite o id da cidade: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-        cityController.deleteCityById(id);
+        controller.deleteCityById(id);
     }
 }

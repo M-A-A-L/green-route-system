@@ -9,12 +9,15 @@ public abstract class VehicleModel {
     protected int fullRechargeTime;
 
     public VehicleModel(int id, String model, double maximumAutonomy, double currentBatteryCharge, double consumeKwhPerKm, int fullRechargeTime) {
+        this(model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime);
         this.id = id;
+    }
+    public VehicleModel (String model, double maximumAutonomy, double currentBatteryCharge, double consumeKwhPerKm, int fullRechargeTime) {
         this.model = model;
-        this.maximumAutonomy = maximumAutonomy;
-        this.currentBatteryCharge = currentBatteryCharge;
-        this.consumeKwhPerKm = consumeKwhPerKm;
-        this.fullRechargeTime = fullRechargeTime;
+        setMaximumAutonomy(maximumAutonomy);
+        setCurrentBatteryCharge(currentBatteryCharge);
+        setConsumeKwhPerKm(consumeKwhPerKm);
+        setFullRechargeTime(fullRechargeTime);
     }
 
     public int getId() {
@@ -38,15 +41,17 @@ public abstract class VehicleModel {
     }
 
     public void setMaximumAutonomy(double maximumAutonomy) {
-        this.maximumAutonomy = maximumAutonomy;
+        if (maximumAutonomy > 0) {
+            this.maximumAutonomy = maximumAutonomy;
+        }
     }
 
-    public double getCurrentBatteryCharge() {
-        return currentBatteryCharge;
-    }
+    public double getCurrentBatteryCharge() { return currentBatteryCharge; }
 
     public void setCurrentBatteryCharge(double currentBatteryCharge) {
-        this.currentBatteryCharge = currentBatteryCharge;
+        if (currentBatteryCharge >= 0 && currentBatteryCharge <= 100) {
+            this.currentBatteryCharge = currentBatteryCharge;
+        }
     }
 
     public double getConsumeKwhPerKm() {
@@ -54,7 +59,9 @@ public abstract class VehicleModel {
     }
 
     public void setConsumeKwhPerKm(double consumeKwhPerKm) {
-        this.consumeKwhPerKm = consumeKwhPerKm;
+        if (consumeKwhPerKm > 0) {
+            this.consumeKwhPerKm = consumeKwhPerKm;
+        }
     }
 
     public int getFullRechargeTime() {
@@ -62,19 +69,12 @@ public abstract class VehicleModel {
     }
 
     public void setFullRechargeTime(int fullRechargeTime) {
-        this.fullRechargeTime = fullRechargeTime;
+        if (fullRechargeTime > 0) {
+            this.fullRechargeTime = fullRechargeTime;
+        }
     }
 
-    public double calcularAutonomiaAtual() {
+    public double calculateCurrentAutonomy() {
         return maximumAutonomy * (currentBatteryCharge / 100);
-    }
-
-    public void displayVehicleData() {
-        System.out.println("ID: " + id);
-        System.out.println("Modelo: " + model);
-        System.out.println("Autonomia Máxima: " + maximumAutonomy + " km");
-        System.out.println("Carga da Bateria: " + currentBatteryCharge + "%");
-        System.out.println("Consumo: " + consumeKwhPerKm + " kWh/km");
-        System.out.println("Tempo de Recarga Completa: " + fullRechargeTime + " min");
     }
 }

@@ -30,7 +30,7 @@ public class VehicleRepository {
         vehicles[this.count++] = vehicle;
         this.id++;
     }
-    public VehicleModel SearchById(int id) {
+    public VehicleModel searchById(int id) {
         for (int i = 0; i < this.count; i++) {
             if (vehicles[i].getId() == id) {
                 return vehicles[i];

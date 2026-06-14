@@ -1,15 +1,18 @@
 package br.upe.greenroute.model;
 
-import java.util.prefs.PreferenceChangeEvent;
-
 public class ElectricVehicleModel extends VehicleModel {
     private String connectorType;
     private int fastCharging;
 
     public ElectricVehicleModel(int id, String model, double maximumAutonomy, double currentBatteryCharge, double consumptionKWhPerKm, int fullRechargeTime, String connectorType, int fastCharging) {
-        super(id, model, maximumAutonomy, currentBatteryCharge, consumptionKWhPerKm, fullRechargeTime);
+        this(model, maximumAutonomy, currentBatteryCharge, consumptionKWhPerKm, fullRechargeTime, connectorType, fastCharging);
+        this.id = id;
+
+    }
+    public ElectricVehicleModel (String model, double maximumAutonomy, double currentBatteryCharge, double consumptionKWhPerKm, int fullRechargeTime, String connectorType, int fastCharging) {
+        super (model, maximumAutonomy, currentBatteryCharge, consumptionKWhPerKm, fullRechargeTime);
         this.connectorType = connectorType;
-        this.fastCharging = fastCharging;
+        setFastCharging(fastCharging);
     }
 
     public String getConnectorType() {
@@ -25,13 +28,8 @@ public class ElectricVehicleModel extends VehicleModel {
     }
 
     public void setFastCharging(int fastCharging) {
-        this.fastCharging = fastCharging;
-    }
-
-    @Override
-    public void displayVehicleData() {
-        super.displayVehicleData();
-        System.out.println("Tipo de Conector: " + connectorType);
-        System.out.println("Tempo de Recarga Rápida: " + fastCharging + " min");
+        if (fastCharging > 0 && fastCharging < fullRechargeTime) {
+            this.fastCharging = fastCharging;
+        }
     }
 }
