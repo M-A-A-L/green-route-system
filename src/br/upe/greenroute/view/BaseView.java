@@ -18,4 +18,8 @@ public abstract class BaseView {
         String answer = scanner.nextLine();
         return answer.equalsIgnoreCase("S");
     }
+    public void Enter() {
+        System.out.println("\nPressione ENTER para continuar. . .");
+        scanner.nextLine();
+    }
 }

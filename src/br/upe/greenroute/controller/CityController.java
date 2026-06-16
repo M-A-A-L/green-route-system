@@ -26,17 +26,20 @@ public class CityController extends BaseController{
         }
         if (error != null) {
             view.displayError(error);
+            view.Enter();
             return;
         }
         double capitalDistance = Double.parseDouble(capitalDistanceStr);
         if (capitalDistance<0) {
             view.displayError("A distância da cidade para a capital não pode ser negativa!");
+            view.Enter();
             return;
         }
         CityModel city = new CityModel(name, state, capitalDistance);
         repository.add(city);
         view.displayMessage("Cidade cadastrada!");
         view.displayCity(city);
+        view.Enter();
     }
     public void searchCityById () {
         int id = view.requestId();
@@ -47,6 +50,7 @@ public class CityController extends BaseController{
         }else {
             view.displayError("Cidade não encontrada no sistema!");
         }
+        view.Enter();
     }
     public void updateCity() {
         int id = view.requestId();
@@ -85,12 +89,14 @@ public class CityController extends BaseController{
         }else {
             view.displayError("Cidade não encontrada no sistema!");
         }
+        view.Enter();
     }
     public void deleteCityById() {
         int id = view.requestId();
         CityModel cityFound = repository.searchById(id);
         if (cityFound == null) {
             view.displayError("Cidade não encontrada no sistema!");
+            view.Enter();
             return;
         }
         view.displayMessage("Você está prestes a excluir a seguinte cidade: ");
@@ -115,6 +121,7 @@ public class CityController extends BaseController{
         }else {
             view.displayMessage("Ação cancelada, a cidade não foi removida!");
         }
+        view.Enter();
     }
     public void listCities() {
         CityModel[] cities = repository.getCities();
@@ -127,5 +134,6 @@ public class CityController extends BaseController{
         }else {
             view.displayError("Nenhuma cidade cadastrada no sistema!");
         }
+        view.Enter();
     }
 }

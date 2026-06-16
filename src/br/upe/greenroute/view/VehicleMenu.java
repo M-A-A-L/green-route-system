@@ -12,30 +12,29 @@ public class VehicleMenu extends BaseMenu{
         this.controller = vehicleController;
     }
     public void showMenu() {
-        int opcao;
+        String opcao;
         boolean executando = true;
         while (executando) {
-            System.out.println("=== Menu Veiculos ===");
-            System.out.println("Escolha uma opção: ");
-            System.out.println("1. Cadastrar veiculo");
-            System.out.println("2. Atualizar veiculo");
-            System.out.println("3. Buscar veiculo");
-            System.out.println("4. Remover veiculo");
-            System.out.println("5. Listar veiculos");
+            System.out.println("\n=== Menu Veículos ===");
+            System.out.println("\nEscolha uma opção: ");
+            System.out.println("\n1. Cadastrar veículo");
+            System.out.println("2. Atualizar veículo");
+            System.out.println("3. Buscar veículo");
+            System.out.println("4. Remover veículo");
+            System.out.println("5. Listar veículos");
             System.out.println("0. Voltar para o menu principal");
-            opcao = scanner.nextInt();
-            scanner.nextLine();
+            opcao = scanner.nextLine();
             switch (opcao) {
-                case 1 -> controller.addVehicle();
-                case 2 -> controller.updateVehicle();
-                case 3 -> controller.searchVehicleById();
-                case 4 -> controller.deleteVehicleById();
-                case 5 -> controller.listVehicles();
-                case 0 -> {
+                case "1" -> controller.addVehicle();
+                case "2" -> controller.updateVehicle();
+                case "3" -> controller.searchVehicleById();
+                case "4" -> controller.deleteVehicleById();
+                case "5" -> controller.listVehicles();
+                case "0" -> {
                     System.out.println("Voltando . . .");
                     executando = false;
                 }
-                default -> view.displayError("Digite uma opção válida!");
+                default -> view.displayError("\nDigite uma opção válida!");
             }
         }
     }

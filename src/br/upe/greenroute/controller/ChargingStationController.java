@@ -45,11 +45,13 @@ public class ChargingStationController extends BaseController {
         String error = validateChargingStation(name, location, cityIdStr, availableConnectorsTypeStr, chargingPowerKWStr, pricePerKWhStr, availableVacanciesStr);
         if (error != null) {
             view.displayError(error);
+            view.Enter();
             return;
         }
         int cityId = Integer.parseInt(cityIdStr);
         if (cityRepository.searchById(cityId) == null) {
             view.displayError("Não existe nenhuma cidade com o id informado! id: " + cityId);
+            view.Enter();
             return;
         }
         String[] availableConnectorsType = availableConnectorsTypeStr.trim().split(",");
@@ -65,12 +67,14 @@ public class ChargingStationController extends BaseController {
         }
         if (error != null) {
             view.displayError(error);
+            view.Enter();
             return;
         }
         ChargingStationModel chargingStation = new ChargingStationModel(name, location, cityId, availableConnectorsType, chargingPowerKW, pricePerKWh, availableVacancies);
         repository.add(chargingStation);
         view.displayMessage("Eletroposto cadastrado no sistema!");
         view.displayChargingStation(chargingStation);
+        view.Enter();
     }
     public void searchChargingStationById() {
         int id = view.requestId();
@@ -81,6 +85,7 @@ public class ChargingStationController extends BaseController {
         }else {
             view.displayError("Eletroposto não encontrado no sistema!");
         }
+        view.Enter();
     }
     public void updateChargingStation() {
         int id = view.requestId();
@@ -151,12 +156,14 @@ public class ChargingStationController extends BaseController {
         }else {
             view.displayError("Eletroposto não encontrado no sistema!");
         }
+        view.Enter();
     }
     public void deleteChargingStationById() {
         int id = view.requestId();
         ChargingStationModel chargingStationFound = repository.searchById(id);
         if (chargingStationFound == null) {
             view.displayError("Eletroposto não encontrado no sistema!");
+            view.Enter();
             return;
         }
         view.displayMessage("Você está prestes a excluir o seguinte eletroposto: ");
@@ -170,6 +177,7 @@ public class ChargingStationController extends BaseController {
         }else {
             view.displayMessage("Ação cancelada, o eletroposto não foi removido!");
         }
+        view.Enter();
     }
     public void listChargingStations() {
         ChargingStationModel[] stations = repository.getStations();
@@ -182,5 +190,6 @@ public class ChargingStationController extends BaseController {
         }else {
             view.displayError("Nenhum eletroposto cadastrado no sistema!");
         }
+        view.Enter();
     }
 }

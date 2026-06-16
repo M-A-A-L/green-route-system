@@ -17,7 +17,7 @@ public class VehicleController extends BaseController{
 
     public void addVehicle() {
         String error;
-        int type = view.requestVehicleType();
+        String type = view.requestVehicleType();
         String[] dates = view.requestDataForCreate();
         String model = dates[0];
         String maximumAutonomyStr = dates[1];
@@ -39,11 +39,12 @@ public class VehicleController extends BaseController{
         }
         if (error != null) {
             view.displayError(error);
+            view.Enter();
             return;
         }
         switch (type) {
-            case 1 -> addElectricVehicle(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
-            case 2 -> addHybridVehicle(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
+            case "1" -> addElectricVehicle(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
+            case "2" -> addHybridVehicle(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
         }
     }
     private void addElectricVehicle(String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr) {
@@ -58,6 +59,7 @@ public class VehicleController extends BaseController{
             }
         if (error != null) {
             view.displayError(error);
+            view.Enter();
             return;
         }
         double maximumAutonomy = Double.parseDouble(maximumAutonomyStr);
@@ -82,12 +84,14 @@ public class VehicleController extends BaseController{
         }
         if (error != null) {
             view.displayError(error);
+            view.Enter();
             return;
         }
         VehicleModel vehicle = new ElectricVehicleModel(model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime, connectorType, fastCharging);
         repository.add(vehicle);
         view.displayMessage("Veiculo cadastrado no sistema!");
         view.displayVehicleData(vehicle);
+        view.Enter();
     }
     private void addHybridVehicle (String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr) {
         String error;
@@ -105,6 +109,7 @@ public class VehicleController extends BaseController{
         }
         if (error != null) {
             view.displayError(error);
+            view.Enter();
             return;
         }
         double maximumAutonomy = Double.parseDouble(maximumAutonomyStr);
@@ -129,12 +134,14 @@ public class VehicleController extends BaseController{
         }
         if (error != null) {
             view.displayError(error);
+            view.Enter();
             return;
         }
         VehicleModel vehicle = new HybridVehicleModel(model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime, fuelTankCapacity, fuelConsumption, fuelType);
         repository.add(vehicle);
         view.displayMessage("Veiculo cadastrado no sistema!");
         view.displayVehicleData(vehicle);
+        view.Enter();
     }
     public String vehicleType(int id) {
         VehicleModel vehicleFound = repository.searchById(id);
@@ -162,6 +169,7 @@ public class VehicleController extends BaseController{
             }
             default -> view.displayError(result);
         }
+        view.Enter();
     }
     public void updateVehicle() {
         int id = view.requestId();
@@ -260,6 +268,7 @@ public class VehicleController extends BaseController{
         } else {
             view.displayError("veiculo não pode ser atualizado!");
         }
+        view.Enter();
     }
     private void updateHybridVehicle (VehicleModel vehicle) {
         HybridVehicleModel hybridVehicle = (HybridVehicleModel) vehicle;
@@ -307,6 +316,7 @@ public class VehicleController extends BaseController{
         VehicleModel vehicleFound = repository.searchById(id);
         if (vehicleFound == null) {
             view.displayError("Veiculo não encontrado no sistema!");
+            view.Enter();
             return;
         }
         view.displayMessage("Você está prestes a excluir o segguinte veiculo: ");
@@ -324,6 +334,7 @@ public class VehicleController extends BaseController{
         }else {
             view.displayMessage("Ação cancelada, o veiculo não foi removido!");
         }
+        view.Enter();
     }
     public void listVehicles() {
         VehicleModel[] vehicles = repository.getVehicles();
@@ -340,5 +351,6 @@ public class VehicleController extends BaseController{
         } else {
             view.displayError("Nenhum veiculo cadastrado no sistema!");
         }
+        view.Enter();
     }
 }

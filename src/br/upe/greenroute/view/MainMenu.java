@@ -49,7 +49,7 @@ public class MainMenu {
     }
 
     public void showMenu() {
-        int opcao;
+        String opcao;
         boolean executando = true;
         while (executando) {
             System.out.print("""
@@ -66,24 +66,23 @@ public class MainMenu {
               ================================================
               SISTEMA DE LOGÍSTICA INTELIGENTE""");
             System.out.println(" ");
-            System.out.println("Escolha uma opção: ");
-            System.out.println("1. Gerenciar veiculos");
+            System.out.println("\nEscolha uma opção: ");
+            System.out.println("\n1. Gerenciar veiculos");
             System.out.println("2. Gerenciar cidades");
             System.out.println("3. Gerenciar eletropostos");
             System.out.println("4. Simular viagem da capital");
            System.out.println("0. Sair");
-           opcao = scanner.nextInt();
-           scanner.nextLine();
+           opcao = scanner.nextLine();
            switch (opcao) {
-               case 1 -> vehicleMenu.showMenu();
-               case 2 -> cityMenu.showMenu();
-               case 3 -> chargingStationMenu.showMenu();
-               case 4 -> tripController.TripSimulation();
-               case 0 -> {
+               case "1" -> vehicleMenu.showMenu();
+               case "2" -> cityMenu.showMenu();
+               case "3" -> chargingStationMenu.showMenu();
+               case "4" -> tripController.TripSimulation();
+               case "0" -> {
                System.out.println("Encerrando o programa . . .");
                executando = false;
                }
-               default -> vehicleView.displayError("Digite uma opção válida!");
+               default -> vehicleView.displayError("\nDigite uma opção válida!");
            }
         }
     }

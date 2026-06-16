@@ -15,7 +15,7 @@ public class TripView extends BaseView{
         return answer.equalsIgnoreCase("S");
     }
     public int requestVehicleId() {
-        System.out.println("Digite o id do veiculo: ");
+        System.out.println("Digite o id do veículo: ");
         int id = scanner.nextInt();
         scanner.nextLine();
         return id;

@@ -13,55 +13,54 @@ public class VehicleView extends BaseView{
     }
 
     public void displayVehicleData(VehicleModel vehicle) {
-        System.out.println("=== Dados do Veiculo ===");
-        System.out.println("ID: " + vehicle.getId());
+        System.out.println("\n=== Dados do Veiculo ===");
+        System.out.println("\nID: " + vehicle.getId());
         System.out.println("Modelo: " + vehicle.getModel());
-        System.out.println("Autonomia Máxima: " + vehicle.getMaximumAutonomy() + " km");
-        System.out.println("Carga da Bateria: " + vehicle.getCurrentBatteryCharge() + "%");
-        System.out.println("Consumo: " + vehicle.getConsumeKwhPerKm() + " kWh/km");
-        System.out.println("Tempo de Recarga Completa: " + vehicle.getFullRechargeTime() + " min");
+        System.out.printf("Autonomia Máxima: %.2f Km%n", vehicle.getMaximumAutonomy());
+        System.out.printf("Carga da Bateria: %.2f %% %n", vehicle.getCurrentBatteryCharge());
+        System.out.printf("Consumo: %.2f kWh/Km%n", vehicle.getConsumeKwhPerKm());
+        System.out.printf("Tempo de Recarga Completa: %d min%n", vehicle.getFullRechargeTime());
     }
 
     public void displayVehicleData(ElectricVehicleModel electricVehicle) {
         displayVehicleData((VehicleModel) electricVehicle);
         System.out.println("Tipo de Conector: " + electricVehicle.getConnectorType());
-        System.out.println("Tempo de Recarga Rápida: " + electricVehicle.getFastCharging() + " min");
+        System.out.printf("Tempo de Recarga Rápida: %d min%n", electricVehicle.getFastCharging());
     }
     public void displayVehicleData(HybridVehicleModel hybridVehicle) {
         displayVehicleData((VehicleModel) hybridVehicle);
-        System.out.println("Capacidade do tanque de combustivel: "+ hybridVehicle.getFuelTankCapacity() +" l");
-        System.out.println("Consumo do combustivel: "+ hybridVehicle.getFuelConsumption() +" Km/l");
+        System.out.printf("Capacidade do tanque de combustivel: %.2f l%n", hybridVehicle.getFuelTankCapacity());
+        System.out.printf("Consumo do combustivel: %.2f Km/l%n", hybridVehicle.getFuelConsumption());
         System.out.println("tipo de combustivel: "+ hybridVehicle.getFuelType());
     }
-    public int requestVehicleType() {
-        System.out.println("Digite o tipo de veiculo:");
-        System.out.println("1-Eletrico");
-        System.out.println("2-Hibrido");
-        int type = scanner.nextInt();
-        scanner.nextLine();
-        if (type == 1 || type == 2) {
+    public String requestVehicleType() {
+        System.out.println("Digite o tipo de veículo: ");
+        System.out.println("1-Elétrico");
+        System.out.println("2-Híbrido");
+        String type = scanner.nextLine();
+        if (type.equals("1") || type.equals("2")) {
             return type;
         }else {
-            displayError("Deve digitar 1 para eletricos ou 2 para hibridos\n");
+            displayError("Deve digitar 1 para eletricos ou 2 para híbridos\n");
             return requestVehicleType();
         }
     }
     public String[] requestDataForCreate() {
-        System.out.println("Digite o modelo do veiculo: ");
+        System.out.println("Digite o modelo do veículo: ");
         String model = scanner.nextLine();
-        System.out.println("Digite a autonomia máxima do veiculo: ");
+        System.out.println("Digite a autonomia máxima: ");
         String maximumAutonomyStr = scanner.nextLine();
-        System.out.println("Digite o carga atual da bateria do veiculo: ");
+        System.out.println("Digite o carga atual da bateria: ");
         String currentBatteryChargeStr = scanner.nextLine();
-        System.out.println("Digite o consumo (kWh/Km) do veiculo: ");
+        System.out.println("Digite o consumo (em kWh/Km): ");
         String consumptionKWhPerKmStr = scanner.nextLine();
-        System.out.println("Digite o tempo de recarga (em minutos) do veiculo: ");
+        System.out.println("Digite o tempo de recarga (em minutos): ");
         String fullRechargeTimeStr = scanner.nextLine();
         return new String[] {model, maximumAutonomyStr, currentBatteryChargeStr, consumptionKWhPerKmStr, fullRechargeTimeStr};
     }
 
     public String[] requestDataForCreateElectricVehicle() {
-        System.out.println("Digite o tipo de conector: )");
+        System.out.println("Digite o tipo de conector: ");
         String connectorType = scanner.nextLine();
         System.out.println("Digite o tempo de recarga rápida (em minutos) em carregadores de alta potencia: ");
         String fastChargingStr = scanner.nextLine();
@@ -77,7 +76,7 @@ public class VehicleView extends BaseView{
         return new String[] {fuelTankCapacityStr, fuelConsumptionStr, fuelType};
     }
     public String[] requestDataForUpdate() {
-        System.out.println("Digite o novo modelo do veiculo: ");
+        System.out.println("Digite o novo modelo do veículo: ");
         String model = scanner.nextLine();
         System.out.println("Digite a nova autonomia máxima: ");
         String maximumAutonomyStr = scanner.nextLine();
@@ -106,7 +105,7 @@ public class VehicleView extends BaseView{
         return new String[] {fuelTankCapacityStr, fuelConsumptionStr, fuelType};
     }
     public int requestId() {
-        System.out.println("Digite o id do veiculo: ");
+        System.out.println("Digite o id do veículo: ");
         int id = scanner.nextInt();
         scanner.nextLine();
         return id;

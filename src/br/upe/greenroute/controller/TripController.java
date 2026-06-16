@@ -1,9 +1,6 @@
 package br.upe.greenroute.controller;
 
-import br.upe.greenroute.model.ChargingStationModel;
-import br.upe.greenroute.model.CityModel;
-import br.upe.greenroute.model.ElectricVehicleModel;
-import br.upe.greenroute.model.VehicleModel;
+import br.upe.greenroute.model.*;
 import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
 import br.upe.greenroute.repository.VehicleRepository;
@@ -32,6 +29,7 @@ public class TripController {
     public void TripSimulation () {
         if (vehicleRepository.isEmpty() || cityRepository.isEmpty()) {
             view.displayError("É necessário ter pelo menos um veículo e uma cidade cadastrados para simular uma viagem!");
+            view.Enter();
             return;
         }
         int vehicleId = view.requestVehicleId();
@@ -41,9 +39,9 @@ public class TripController {
         if (vehicle != null &&  destination!= null) {
             view.displayMessage("Veiculo informado: ");
             if (vehicle instanceof ElectricVehicleModel) {
-                vehicleView.displayVehicleData(vehicle);
+                vehicleView.displayVehicleData((ElectricVehicleModel) vehicle);
             }else {
-                vehicleView.displayVehicleData(vehicle);
+                vehicleView.displayVehicleData((HybridVehicleModel) vehicle);
             }
             view.displayMessage("Cidade informada: ");
             cityView.displayCity(destination);
@@ -51,6 +49,7 @@ public class TripController {
             double destinyDistance = destination.getCapitalDistance();
             if (currentAutonnomy >= destinyDistance) {
                 view.displayMessage("A autonomia atual do carro é suficiente para concluir a viagem! autonomia restante: "+(currentAutonnomy - destinyDistance));
+                view.Enter();
                 return;
             }
             view.displayMessage("A autonomia atual do carro é insuficiente para concluir a viagem!");
@@ -63,13 +62,11 @@ public class TripController {
                 }
             }else {
                 view.displayMessage("Viagem cancelada pelo usuário!");
-                return;
             }
         }else {
             view.displayError("Veiculo ou cidade não encontrado no sistema!");
-            return;
         }
-
+        view.Enter();
     }
     private CityModel requestValidStop(double currentAutonnomy) {
         boolean wantToStop = view.askWantToMakeAStop();

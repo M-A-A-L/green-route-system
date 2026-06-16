@@ -13,30 +13,29 @@ public class ChargingStationMenu extends BaseMenu{
     }
     @Override
     public void showMenu() {
-        int opcao;
+        String opcao;
         boolean executando = true;
         while (executando) {
-            System.out.println("=== Menu Eletropostos ===");
-            System.out.println("Escolha uma opção: ");
-            System.out.println("1. Cadastrar eletroposto");
+            System.out.println("\n=== Menu Eletropostos ===");
+            System.out.println("\nEscolha uma opção: ");
+            System.out.println("\n1. Cadastrar eletroposto");
             System.out.println("2. Atualizar eletroposto");
             System.out.println("3. Buscar eletroposto");
             System.out.println("4. Remover eletroposto");
             System.out.println("5. Listar eletropostos");
             System.out.println("0. Voltar para o menu principal");
-            opcao = scanner.nextInt();
-            scanner.nextLine();
+            opcao = scanner.nextLine();
             switch (opcao) {
-                case 1 -> controller.addChargingStation();
-                case 2 -> controller.updateChargingStation();
-                case 3 -> controller.searchChargingStationById();
-                case 4 -> controller.deleteChargingStationById();
-                case 5 -> controller.listChargingStations();
-                case 0 -> {
+                case "1" -> controller.addChargingStation();
+                case "2" -> controller.updateChargingStation();
+                case "3" -> controller.searchChargingStationById();
+                case "4" -> controller.deleteChargingStationById();
+                case "5" -> controller.listChargingStations();
+                case "0" -> {
                     System.out.println("Voltando . . .");
                     executando = false;
                 }
-                default -> view.displayError("Digite uma opção válida!") ;
+                default -> view.displayError("\nDigite uma opção válida!") ;
             }
         }
     }
