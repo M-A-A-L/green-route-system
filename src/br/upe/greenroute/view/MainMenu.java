@@ -2,6 +2,7 @@ package br.upe.greenroute.view;
 
 import br.upe.greenroute.controller.ChargingStationController;
 import br.upe.greenroute.controller.CityController;
+import br.upe.greenroute.controller.TripController;
 import br.upe.greenroute.controller.VehicleController;
 import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
@@ -23,10 +24,13 @@ public class MainMenu {
     private final ChargingStationView chargingStationView;
     private final ChargingStationMenu chargingStationMenu;
     private final ChargingStationRepository chargingStationRepository;
+    private final TripView tripView;
+    private final TripController tripController;
 
     public MainMenu(Scanner scanner, VehicleView vehicleView, VehicleRepository vehicleRepository, VehicleController vehicleController,
                     CityView cityView, CityRepository cityRepository, CityController cityController,
-                    ChargingStationView chargingStationView, ChargingStationRepository chargingStationRepository, ChargingStationController chargingStationController) {
+                    ChargingStationView chargingStationView, ChargingStationRepository chargingStationRepository, ChargingStationController chargingStationController,
+                    TripView tripView, TripController tripController) {
         this.scanner = scanner;
         this.vehicleView = vehicleView;
         this.vehicleController = vehicleController;
@@ -40,6 +44,8 @@ public class MainMenu {
         this.chargingStationRepository = chargingStationRepository;
         this.chargingStationController = chargingStationController;
         this.chargingStationMenu = new ChargingStationMenu(scanner, chargingStationView, chargingStationController);
+        this.tripController = tripController;
+        this.tripView = tripView;
     }
 
     public void showMenu() {
@@ -60,10 +66,11 @@ public class MainMenu {
               ================================================
               SISTEMA DE LOGÍSTICA INTELIGENTE""");
             System.out.println(" ");
-           System.out.println("Escolha uma opção: ");
-           System.out.println("1. Gerenciar veiculos");
-           System.out.println("2. Gerenciar cidades");
+            System.out.println("Escolha uma opção: ");
+            System.out.println("1. Gerenciar veiculos");
+            System.out.println("2. Gerenciar cidades");
             System.out.println("3. Gerenciar eletropostos");
+            System.out.println("4. Simular viagem da capital");
            System.out.println("0. Sair");
            opcao = scanner.nextInt();
            scanner.nextLine();
@@ -71,11 +78,12 @@ public class MainMenu {
                case 1 -> vehicleMenu.showMenu();
                case 2 -> cityMenu.showMenu();
                case 3 -> chargingStationMenu.showMenu();
+               case 4 -> tripController.TripSimulation();
                case 0 -> {
                System.out.println("Encerrando o programa . . .");
                executando = false;
                }
-               default -> System.out.println("Digite uma opção válida!");
+               default -> vehicleView.displayError("Digite uma opção válida!");
            }
         }
     }

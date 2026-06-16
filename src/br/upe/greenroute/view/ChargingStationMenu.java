@@ -36,7 +36,7 @@ public class ChargingStationMenu extends BaseMenu{
                     System.out.println("Voltando . . .");
                     executando = false;
                 }
-                default -> System.out.println("Digite uma opção válida!");
+                default -> view.displayError("Digite uma opção válida!") ;
             }
         }
     }

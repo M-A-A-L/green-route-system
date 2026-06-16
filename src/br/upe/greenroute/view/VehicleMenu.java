@@ -4,8 +4,8 @@ import br.upe.greenroute.controller.VehicleController;
 import java.util.Scanner;
 public class VehicleMenu extends BaseMenu{
     private final Scanner scanner;
-    private VehicleView view;
-    private VehicleController controller;
+    private final VehicleView view;
+    private final VehicleController controller;
     public VehicleMenu(Scanner scanner, VehicleView vehicleView, VehicleController vehicleController) {
         this.scanner = scanner;
         this.view = vehicleView;
@@ -35,7 +35,7 @@ public class VehicleMenu extends BaseMenu{
                     System.out.println("Voltando . . .");
                     executando = false;
                 }
-                default -> System.out.println("Digite uma opção válida!");
+                default -> view.displayError("Digite uma opção válida!");
             }
         }
     }

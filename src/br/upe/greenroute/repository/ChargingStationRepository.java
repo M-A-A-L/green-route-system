@@ -47,7 +47,7 @@ public class ChargingStationRepository {
     }
     public boolean deleteById(int id) {
         for (int i = 0; i < this.count; i++) {
-            if (stations[i].getId() == id) {
+            if (stations[i] != null && stations[i].getId() == id) {
                 for (int j = i; j < count - 1; j++) {
                     stations[j] = stations[j + 1];
                 }
@@ -58,7 +58,7 @@ public class ChargingStationRepository {
         }
         return false;
     }
-    public ChargingStationModel[] searchByCityID (int cityId) {
+    public ChargingStationModel[] searchByCityId(int cityId) {
         ChargingStationModel[] stationsFound = new ChargingStationModel[this.count];
         int count = 0;
         for (int i = 0; i < this.count; i++) {
@@ -68,15 +68,38 @@ public class ChargingStationRepository {
             }
         }
         ChargingStationModel[] chargingStationsOnCity = new ChargingStationModel[count];
-        for (int i = 0; i < this.count; i++) {
+        for (int i = 0; i < count; i++) {
             chargingStationsOnCity[i] = stationsFound[i];
         }
         return chargingStationsOnCity;
     }
+    public int countStationsByCityId(int cityId) {
+        int count = 0;
+        for (ChargingStationModel station : stations) {
+            if (station != null && station.getCityId() == cityId) {
+                count++;
+            }
+        }
+        return count;
+    }
+    public boolean deleteStationsByCityId(int cityId) {
+        boolean someDeleted = false;
+        for (int i = (this.count - 1); i >= 0; i--) {
+            if (stations[i] != null && stations[i].getCityId() == cityId) {
+                for (int j = i; j < this.count - 1; j++) {
+                    stations[j] = stations[j + 1];
+                }
+                stations[this.count - 1] = null;
+                this.count--;
+                someDeleted = true;
+            }
+        }
+        return someDeleted;
+    }
     public ChargingStationModel[] getStations() {
         return stations;
     }
-    public int getCount() {
-        return count;
+    public boolean isEmpty() {
+        return this.count == 0;
     }
 }

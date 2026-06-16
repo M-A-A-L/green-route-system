@@ -76,8 +76,7 @@ public class CityRepository {
     public CityModel[] getCities() {
         return cities;
     }
-
-    public int getCount() {
-        return count;
+    public boolean isEmpty() {
+        return this.count == 0;
     }
 }

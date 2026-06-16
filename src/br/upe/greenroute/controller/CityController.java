@@ -1,25 +1,26 @@
 package br.upe.greenroute.controller;
 
 import br.upe.greenroute.model.CityModel;
+import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
 import br.upe.greenroute.view.CityView;
 
 public class CityController extends BaseController{
     private final CityRepository repository;
     private final CityView view;
-    public CityController (CityRepository repository, CityView view) {
+    private final ChargingStationRepository stationRepository;
+    public CityController (CityRepository repository, CityView view, ChargingStationRepository stationRepository) {
         this.repository = repository;
         this.view = view;
+        this.stationRepository = stationRepository;
     }
     public void addCity () {
         String[] dates = view.requestDataForCreate();
         String name = dates[0];
         String state = dates[1];
         String capitalDistanceStr = dates[2];
-        String error = null;
-        if (error == null) {
-            error = isAnyBlank(name, state, capitalDistanceStr);
-        }
+        String error;
+        error = isAnyBlank(name, state, capitalDistanceStr);
         if (error == null) {
             error = isDouble(capitalDistanceStr, "A distância deve ser um valor decimal");
         }
@@ -94,10 +95,21 @@ public class CityController extends BaseController{
         }
         view.displayMessage("Você está prestes a excluir a seguinte cidade: ");
         view.displayCity(cityFound);
+        int sationsCount = stationRepository.countStationsByCityId(id);
+        if (sationsCount > 0) {
+            view.displayMessage("Esta cidade possui "+sationsCount+" eletroposto(s) vinculado(s).");
+            view.displayMessage("Se você exclui-la, todos os eletropostos vinculados a ela serão apagados!");
+        }
         boolean confirmation = view.askForDeleteConfirmation();
         if (confirmation) {
-            boolean result = repository.deleteById(id);
-            if (result) {
+            if (sationsCount > 0) {
+                if (stationRepository.deleteStationsByCityId(id)) {
+                    view.displayMessage(sationsCount+" eletropostos deletados!");
+                }else {
+                    view.displayError("Não foi possivel deletar os eletropostos!");
+                }
+            }
+            if (repository.deleteById(id)) {
                 view.displayMessage("Cidade deletada com sucesso!");
             }
         }else {

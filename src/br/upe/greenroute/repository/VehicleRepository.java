@@ -38,15 +38,6 @@ public class VehicleRepository {
         }
         return null;
     }
-    public VehicleModel[] listAll() {
-        VehicleModel[] result = new VehicleModel[count];
-
-        for (int i = 0; i < count; i++) {
-            result[i] = vehicles[i];
-        }
-
-        return result;
-    }
 
     public boolean update(VehicleModel updateVehicle) {
         for (int i = 0; i < this.count; i++) {
@@ -73,7 +64,7 @@ public class VehicleRepository {
     public VehicleModel[] getVehicles() {
         return vehicles;
     }
-    public int getCount() {
-        return count;
+    public boolean isEmpty() {
+        return this.count == 0;
     }
 }

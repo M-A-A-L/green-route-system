@@ -52,10 +52,6 @@ public class ChargingStationModel {
         return cityId;
     }
 
-    public void setCityId(int cityId) {
-        this.cityId = cityId;
-    }
-
     public String[] getAvailableConnectorsType() {
         return availableConnectorsType;
     }

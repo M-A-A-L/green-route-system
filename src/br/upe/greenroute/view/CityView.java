@@ -28,9 +28,6 @@ public class CityView extends BaseView{
         return new String[] {name,state,capitalDistanceStr};
     }
     public String[] requestDataForUpdate() {
-        System.out.println("Digite o id da cidade: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
         System.out.println("Digite o novo nome da cidade (Enter para manter): ");
         String name = scanner.nextLine();
         System.out.println("Digite o estado (UF) (Enter para manter): ");
