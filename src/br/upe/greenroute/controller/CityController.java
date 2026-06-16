@@ -11,7 +11,11 @@ public class CityController extends BaseController{
         this.repository = repository;
         this.view = view;
     }
-    public void addCity (String name,String state, String capitalDistanceStr) {
+    public void addCity () {
+        String[] dates = view.requestDataForCreate();
+        String name = dates[0];
+        String state = dates[1];
+        String capitalDistanceStr = dates[2];
         String error = null;
         if (error == null) {
             error = isAnyBlank(name, state, capitalDistanceStr);
@@ -33,7 +37,8 @@ public class CityController extends BaseController{
         view.displayMessage("Cidade cadastrada!");
         view.displayCity(city);
     }
-    public void searchCityById (int id) {
+    public void searchCityById () {
+        int id = view.requestId();
         CityModel cityFound = repository.searchById(id);
         if ( cityFound != null) {
             view.displayMessage("Cidade encontrada!");
@@ -42,9 +47,15 @@ public class CityController extends BaseController{
             view.displayError("Cidade não encontrada no sistema!");
         }
     }
-    public void updateCity(int id, String name,String state, String capitalDistanceStr) {
+    public void updateCity() {
+        int id = view.requestId();
+        String[] dates = view.requestDataForUpdate();
+        String name = dates[0];
+        String state = dates[1];
+        String capitalDistanceStr = dates[2];
         CityModel cityFound = repository.searchById(id);
         if (cityFound != null) {
+            view.displayCity(cityFound);
             if (name != null  && !name.isBlank()) {
                 cityFound.setName(name);
             }
@@ -74,24 +85,35 @@ public class CityController extends BaseController{
             view.displayError("Cidade não encontrada no sistema!");
         }
     }
-    public void deleteCityById(int id) {
-        boolean result = repository.deleteById(id);
-        if (result) {
-            view.displayMessage("Cidade deletada com sucesso!");
-        }else {
+    public void deleteCityById() {
+        int id = view.requestId();
+        CityModel cityFound = repository.searchById(id);
+        if (cityFound == null) {
             view.displayError("Cidade não encontrada no sistema!");
+            return;
+        }
+        view.displayMessage("Você está prestes a excluir a seguinte cidade: ");
+        view.displayCity(cityFound);
+        boolean confirmation = view.askForDeleteConfirmation();
+        if (confirmation) {
+            boolean result = repository.deleteById(id);
+            if (result) {
+                view.displayMessage("Cidade deletada com sucesso!");
+            }
+        }else {
+            view.displayMessage("Ação cancelada, a cidade não foi removida!");
         }
     }
     public void listCities() {
         CityModel[] cities = repository.getCities();
-        if (cities == null || cities.length == 0) {
-            view.displayError("Nenhuma cidade cadastrada no sistema");
-        } else {
+        if (cities != null && cities.length > 0) {
             for (CityModel city : cities) {
                 if (city != null) {
                     view.displayCity(city);
                 }
             }
+        }else {
+            view.displayError("Nenhuma cidade cadastrada no sistema!");
         }
     }
 }

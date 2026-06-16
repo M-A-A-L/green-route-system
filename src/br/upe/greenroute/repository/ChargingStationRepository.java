@@ -28,7 +28,7 @@ public class ChargingStationRepository {
         stations[this.count++] = station;
         this.id++;
     }
-    public ChargingStationModel searchByID(int id) {
+    public ChargingStationModel searchById(int id) {
         for (int i = 0; i < this.count; i++) {
             if (stations[i].getId() == id) {
                 return stations[i];
@@ -45,7 +45,7 @@ public class ChargingStationRepository {
         }
         return false;
     }
-    public boolean deleteStationById(int id) {
+    public boolean deleteById(int id) {
         for (int i = 0; i < this.count; i++) {
             if (stations[i].getId() == id) {
                 for (int j = i; j < count - 1; j++) {
@@ -57,6 +57,21 @@ public class ChargingStationRepository {
             }
         }
         return false;
+    }
+    public ChargingStationModel[] searchByCityID (int cityId) {
+        ChargingStationModel[] stationsFound = new ChargingStationModel[this.count];
+        int count = 0;
+        for (int i = 0; i < this.count; i++) {
+            if (stations[i].getCityId() == cityId) {
+                stationsFound[count] = stations[i];
+                count++;
+            }
+        }
+        ChargingStationModel[] chargingStationsOnCity = new ChargingStationModel[count];
+        for (int i = 0; i < this.count; i++) {
+            chargingStationsOnCity[i] = stationsFound[i];
+        }
+        return chargingStationsOnCity;
     }
     public ChargingStationModel[] getStations() {
         return stations;

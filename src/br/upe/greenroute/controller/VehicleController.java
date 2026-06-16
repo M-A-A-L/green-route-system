@@ -1,6 +1,5 @@
 package br.upe.greenroute.controller;
 
-import br.upe.greenroute.model.CityModel;
 import br.upe.greenroute.model.ElectricVehicleModel;
 import br.upe.greenroute.model.HybridVehicleModel;
 import br.upe.greenroute.model.VehicleModel;
@@ -10,17 +9,22 @@ import br.upe.greenroute.view.VehicleView;
 public class VehicleController extends BaseController{
     private final VehicleRepository repository;
     private final VehicleView view;
-    String error;
 
     public VehicleController(VehicleRepository repository, VehicleView view) {
         this.repository = repository;
         this.view = view;
     }
 
-    private void addVehicle (String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr) {
-        if (error == null) {
-            error = isAnyBlank(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
-        }
+    public void addVehicle() {
+        String error;
+        int type = view.requestVehicleType();
+        String[] dates = view.requestDataForCreate();
+        String model = dates[0];
+        String maximumAutonomyStr = dates[1];
+        String currentBatteryChargeStr = dates[2];
+        String consumeKwhPerKmStr = dates[3];
+        String fullRechargeTimeStr = dates[4];
+        error = isAnyBlank(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
         if (error == null) {
             error = isDouble(maximumAutonomyStr,"A autonomia máxima deve ser um valor valido!");
         }
@@ -33,13 +37,22 @@ public class VehicleController extends BaseController{
         if (error == null) {
             error = isInt(fullRechargeTimeStr, "O tempo de recarga completa deve ser um valor valido!");
         }
+        if (error != null) {
+            view.displayError(error);
+            return;
+        }
+        switch (type) {
+            case 1 -> addElectricVehicle(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
+            case 2 -> addHybridVehicle(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
+        }
     }
-    public void addElectricVehicle(String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr, String connectorType, String fastChargingStr) {
-        addVehicle(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
-        this.error = null;
-        if (error == null) {
-            error = isAnyBlank(connectorType, fastChargingStr);
-            }
+    private void addElectricVehicle(String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr) {
+        String error;
+        String[] dates = view.requestDataForCreateElectricVehicle();
+        String connectorType = dates[0];
+        String fastChargingStr = dates[1];
+
+        error = isAnyBlank(connectorType, fastChargingStr);
         if (error == null) {
             error = isInt(fastChargingStr, "O tempo de recarga rápida deve se um valor inteiro!");
             }
@@ -74,14 +87,16 @@ public class VehicleController extends BaseController{
         VehicleModel vehicle = new ElectricVehicleModel(model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime, connectorType, fastCharging);
         repository.add(vehicle);
         view.displayMessage("Veiculo cadastrado no sistema!");
-        view.displayVehicleData((ElectricVehicleModel) vehicle);
+        view.displayVehicleData(vehicle);
     }
-    public void addHybridVehicle (String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr, String fuelTankCapacityStr, String fuelConsumptionStr, String fuelType) {
-        addVehicle(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
-        this.error = null;
-        if (error == null) {
-            error = isAnyBlank(fuelTankCapacityStr, fuelConsumptionStr, fuelType);
-        }
+    private void addHybridVehicle (String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr) {
+        String error;
+        String[] dates = view.requestDataForCreateHybridVehicle();
+        String fuelTankCapacityStr = dates[0];
+        String fuelConsumptionStr = dates[1];
+        String fuelType = dates[2];
+
+        error = isAnyBlank(fuelTankCapacityStr, fuelConsumptionStr, fuelType);
         if (error == null) {
             error = isDouble(fuelTankCapacityStr, "A capacidade do tanque de combustivel deve ser um valor valido!");
         }
@@ -119,7 +134,7 @@ public class VehicleController extends BaseController{
         VehicleModel vehicle = new HybridVehicleModel(model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime, fuelTankCapacity, fuelConsumption, fuelType);
         repository.add(vehicle);
         view.displayMessage("Veiculo cadastrado no sistema!");
-        view.displayVehicleData((HybridVehicleModel) vehicle);
+        view.displayVehicleData(vehicle);
     }
     public String vehicleType(int id) {
         VehicleModel vehicleFound = repository.searchById(id);
@@ -132,7 +147,8 @@ public class VehicleController extends BaseController{
         }
         return "veiculo não encontrado no sistema!";
     }
-    public void searchVehicleById (int id) {
+    public void searchVehicleById () {
+        int id = view.requestId();
         VehicleModel vehicleFound = repository.searchById(id);
         String result = vehicleType(id);
         switch (result) {
@@ -147,7 +163,15 @@ public class VehicleController extends BaseController{
             default -> view.displayError(result);
         }
     }
-    private VehicleModel updateVehicle(int id,String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr) {
+    public void updateVehicle() {
+        int id = view.requestId();
+        String type = vehicleType(id);
+        String[] dates = view.requestDataForUpdate();
+        String model = dates[0];
+        String maximumAutonomyStr = dates[1];
+        String currentBatteryChargeStr = dates[2];
+        String consumeKwhPerKmStr = dates[3];
+        String fullRechargeTimeStr = dates[4];
         VehicleModel vehicleFound = repository.searchById(id);
         if (vehicleFound != null) {
             if (model != null && !model.isBlank()) {
@@ -201,95 +225,109 @@ public class VehicleController extends BaseController{
                         view.displayError("O tempo de recarga completa deve ser um valor valido! (Será mantido o valor anterior)");
                 }
             }
-            return vehicleFound;
-        }
-        return null;
-    }
-    public void updateElectricVehicle (int id,String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr,  String connectorType, String fastChargingStr) {
-        VehicleModel vehicleFound = updateVehicle(id, model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
-        if (vehicleFound != null) {
-            ElectricVehicleModel vehicle = (ElectricVehicleModel) vehicleFound;
-            if (connectorType != null && !connectorType.isBlank()) {
-                vehicle.setConnectorType(connectorType);
-            }
-            if (fastChargingStr != null && !fastChargingStr.isBlank()) {
-                if (validInt(fastChargingStr)) {
-                    int fastCharging = Integer.parseInt(fastChargingStr);
-                    if (fastCharging > 0 && fastCharging < vehicle.getFullRechargeTime()) {
-                        vehicle.setFastCharging(fastCharging);
-                    }else {
-                        view.displayError("O tempo de recarga rápida da bateria deve ser um valor positivo! (Será mantido o valor anterior)");
-                    }
-                }else {
-                    view.displayError("O tempo de recarga rápida deve se um valor válido! (Será mantido o valor anterior)");
-                }
-            }
-            boolean result = repository.update(vehicle);
-            if (result) {
-              view.displayMessage("Veiculo atualizado com sucesso!");
-              view.displayVehicleData(vehicle);
-            }else {
-                view.displayError("veiculo não pode ser atualizado!");
+            switch (type) {
+                case "1" -> updateElectricVehicle(vehicleFound);
+                case "2" -> updateHybridVehicle(vehicleFound);
             }
         }else {
-            view.displayError("Veiculo não encontrao no sistema!");
+            view.displayError(type);
         }
     }
-    public void updateHybridVehicle (int id,String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr, String fuelTankCapacityStr, String fuelConsumptionStr, String fuelType) {
-        VehicleModel vehicleFound = updateVehicle(id, model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
-        if (vehicleFound != null) {
-            HybridVehicleModel vehicle = (HybridVehicleModel) vehicleFound;
-            if (fuelType != null && !fuelType.isBlank()) {
-                vehicle.setFuelType(fuelType);
-            }
-            if (fuelTankCapacityStr != null && !fuelTankCapacityStr.isBlank()) {
-                if (validDouble(fuelTankCapacityStr)) {
-                    double fuelTankCapacity = Double.parseDouble(fuelTankCapacityStr);
-                    if (fuelTankCapacity > 0) {
-                        vehicle.setFuelTankCapacity(fuelTankCapacity);
-                    }else {
-                        view.displayError("A capacidade do tanque de combustivel deve ser valor positivo! (Será mantido o valor anterior)");
-                    }
-                }else {
-                    view.displayError("A capacidade do tanque de combustivel deve ser um valor válido! (Será mantido o valor anterior)");
-                }
-            }
-            if (fuelConsumptionStr != null && !fuelConsumptionStr.isBlank()) {
-                if (!validDouble(fuelConsumptionStr)) {
-                    double fuelConsumption = Double.parseDouble(fuelConsumptionStr);
-                    if (fuelConsumption > 0) {
-                        vehicle.setFuelConsumption(fuelConsumption);
-                    }else {
-                        view.displayError("O consumo do combustivel deve ser valor positivo! (Será mantido o valor anterior)");
-                    }
-                }else {
-                    view.displayError("O consumo de combustivel do motor deve ser um valor valido! (Será mantido o valor anterior)");
-                }
-            }
-            boolean result = repository.update(vehicle);
-            if (result) {
-                view.displayMessage("Veiculo atualizado com sucesso!");
-                view.displayVehicleData(vehicle);
-            }else {
-                view.displayError("veiculo não pode ser atualizado!");
-            }
-        }else {
-            view.displayError("Veiculo não encontrao no sistema!");
+    private void updateElectricVehicle (VehicleModel vehicle) {
+        ElectricVehicleModel electricVehicle = (ElectricVehicleModel) vehicle;
+        String[] dates = view.requestDataForUpdateElectricVehicle();
+        String connectorType = dates[0];
+        String fastChargingStr = dates[1];
+        if (connectorType != null && !connectorType.isBlank()) {
+            electricVehicle.setConnectorType(connectorType);
         }
-    }
-    public void deleteVehicleById(int id) {
-        boolean result = repository.deleteById(id);
+        if (fastChargingStr != null && !fastChargingStr.isBlank()) {
+            if (validInt(fastChargingStr)) {
+                int fastCharging = Integer.parseInt(fastChargingStr);
+                if (fastCharging > 0 && fastCharging < electricVehicle.getFullRechargeTime()) {
+                    electricVehicle.setFastCharging(fastCharging);
+                } else {
+                    view.displayError("O tempo de recarga rápida da bateria deve ser um valor positivo! (Será mantido o valor anterior)");
+                }
+            } else {
+                view.displayError("O tempo de recarga rápida deve se um valor válido! (Será mantido o valor anterior)");
+            }
+        }
+        boolean result = repository.update(electricVehicle);
         if (result) {
-            view.displayMessage("Veiculo deletado com sucesso!");
-        }else {
+            view.displayMessage("Veiculo atualizado com sucesso!");
+            view.displayVehicleData(electricVehicle);
+        } else {
+            view.displayError("veiculo não pode ser atualizado!");
+        }
+    }
+    private void updateHybridVehicle (VehicleModel vehicle) {
+        HybridVehicleModel hybridVehicle = (HybridVehicleModel) vehicle;
+        String[] dates = view.requestDataForUpdateHybridVehicle();
+        String fuelTankCapacityStr = dates[0];
+        String fuelConsumptionStr = dates[1];
+        String fuelType = dates[2];
+        if (fuelType != null && !fuelType.isBlank()) {
+            hybridVehicle.setFuelType(fuelType);
+        }
+        if (fuelTankCapacityStr != null && !fuelTankCapacityStr.isBlank()) {
+            if (validDouble(fuelTankCapacityStr)) {
+                double fuelTankCapacity = Double.parseDouble(fuelTankCapacityStr);
+                if (fuelTankCapacity > 0) {
+                    hybridVehicle.setFuelTankCapacity(fuelTankCapacity);
+                } else {
+                    view.displayError("A capacidade do tanque de combustivel deve ser valor positivo! (Será mantido o valor anterior)");
+                }
+            } else {
+                view.displayError("A capacidade do tanque de combustivel deve ser um valor válido! (Será mantido o valor anterior)");
+            }
+        }
+        if (fuelConsumptionStr != null && !fuelConsumptionStr.isBlank()) {
+            if (!validDouble(fuelConsumptionStr)) {
+                double fuelConsumption = Double.parseDouble(fuelConsumptionStr);
+                if (fuelConsumption > 0) {
+                    hybridVehicle.setFuelConsumption(fuelConsumption);
+                } else {
+                    view.displayError("O consumo do combustivel deve ser valor positivo! (Será mantido o valor anterior)");
+                }
+            } else {
+                view.displayError("O consumo de combustivel do motor deve ser um valor valido! (Será mantido o valor anterior)");
+            }
+        }
+        boolean result = repository.update(hybridVehicle);
+        if (result) {
+            view.displayMessage("Veiculo atualizado com sucesso!");
+            view.displayVehicleData(hybridVehicle);
+        } else {
+            view.displayError("veiculo não pode ser atualizado!");
+        }
+    }
+    public void deleteVehicleById() {
+        int id = view.requestId();
+        VehicleModel vehicleFound = repository.searchById(id);
+        if (vehicleFound == null) {
             view.displayError("Veiculo não encontrado no sistema!");
+            return;
+        }
+        view.displayMessage("Você está prestes a excluir o segguinte veiculo: ");
+        String type = vehicleType(id);
+        switch (type) {
+            case "1" -> view.displayVehicleData((ElectricVehicleModel) vehicleFound);
+            case "2" -> view.displayVehicleData((HybridVehicleModel) vehicleFound);
+        }
+        boolean confirmation = view.askForDeleteConfirmation();
+        if (confirmation) {
+            boolean result = repository.deleteById(id);
+            if (result) {
+                view.displayMessage("Veiculo deletado com sucesso!");
+            }
+        }else {
+            view.displayMessage("Ação cancelada, o veiculo não foi removido!");
         }
     }
     public void listVehicles() {
         VehicleModel[] vehicles = repository.getVehicles();
-        if (vehicles == null || vehicles.length == 0) {
-            view.displayError("Nenhum veiculo cadastrado no sistema!");
-        } else {
+        if (vehicles != null && vehicles.length > 0) {
             for (VehicleModel vehicle : vehicles) {
                 if (vehicle != null) {
                     String type = vehicleType(vehicle.getId());
@@ -299,6 +337,8 @@ public class VehicleController extends BaseController{
                     }
                 }
             }
+        } else {
+            view.displayError("Nenhum veiculo cadastrado no sistema!");
         }
     }
 }

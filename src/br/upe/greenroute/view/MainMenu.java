@@ -1,7 +1,9 @@
 package br.upe.greenroute.view;
 
+import br.upe.greenroute.controller.ChargingStationController;
 import br.upe.greenroute.controller.CityController;
 import br.upe.greenroute.controller.VehicleController;
+import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
 import br.upe.greenroute.repository.VehicleRepository;
 
@@ -17,11 +19,14 @@ public class MainMenu {
     private final CityView cityView;
     private final CityMenu cityMenu;
     private final CityRepository cityRepository;
+    private final ChargingStationController chargingStationController;
+    private final ChargingStationView chargingStationView;
     private final ChargingStationMenu chargingStationMenu;
+    private final ChargingStationRepository chargingStationRepository;
 
     public MainMenu(Scanner scanner, VehicleView vehicleView, VehicleRepository vehicleRepository, VehicleController vehicleController,
-                    CityView cityView, CityRepository cityRepository, CityController cityController
-                    ) {
+                    CityView cityView, CityRepository cityRepository, CityController cityController,
+                    ChargingStationView chargingStationView, ChargingStationRepository chargingStationRepository, ChargingStationController chargingStationController) {
         this.scanner = scanner;
         this.vehicleView = vehicleView;
         this.vehicleController = vehicleController;
@@ -31,7 +36,10 @@ public class MainMenu {
         this.cityController = cityController;
         this.cityRepository = cityRepository;
         this.cityMenu = new CityMenu(scanner,cityView, cityController);
-        this.chargingStationMenu = new ChargingStationMenu(scanner);
+        this.chargingStationView = chargingStationView;
+        this.chargingStationRepository = chargingStationRepository;
+        this.chargingStationController = chargingStationController;
+        this.chargingStationMenu = new ChargingStationMenu(scanner, chargingStationView, chargingStationController);
     }
 
     public void showMenu() {
@@ -54,22 +62,20 @@ public class MainMenu {
             System.out.println(" ");
            System.out.println("Escolha uma opção: ");
            System.out.println("1. Gerenciar veiculos");
-           System.out.println("2. Gerenciar eletropostos");
-           System.out.println("3. Gerenciar cidades");
+           System.out.println("2. Gerenciar cidades");
+            System.out.println("3. Gerenciar eletropostos");
            System.out.println("0. Sair");
            opcao = scanner.nextInt();
            scanner.nextLine();
-           if (opcao == 1){
-               vehicleMenu.showMenu();
-           }else if (opcao == 2) {
-               //chargingStationMenu.showMenu();
-           }else if (opcao == 3) {
-               cityMenu.showMenu();
-           }else if (opcao == 0) {
+           switch (opcao) {
+               case 1 -> vehicleMenu.showMenu();
+               case 2 -> cityMenu.showMenu();
+               case 3 -> chargingStationMenu.showMenu();
+               case 0 -> {
                System.out.println("Encerrando o programa . . .");
                executando = false;
-           }else {
-               System.out.println("Digite uma opção válida!");
+               }
+               default -> System.out.println("Digite uma opção válida!");
            }
         }
     }

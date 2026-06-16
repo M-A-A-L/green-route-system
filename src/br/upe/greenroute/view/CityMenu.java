@@ -26,11 +26,12 @@ public class CityMenu extends BaseMenu {
             System.out.println("5. Listar cidades");
             System.out.println("0. Voltar para o menu principal");
             opcao = scanner.nextInt();
+            scanner.nextLine();
             switch (opcao) {
-                case 1 -> requestDataForCreate();
-                case 2 -> requestDataForUpdate();
-                case 3 -> requestDataForRead();
-                case 4 -> requestDataForDelete();
+                case 1 -> controller.addCity();
+                case 2 -> controller.updateCity();
+                case 3 -> controller.searchCityById();
+                case 4 -> controller.deleteCityById();
                 case 5 -> controller.listCities();
                 case 0 -> {
                     System.out.println("Voltando . . .");
@@ -39,43 +40,5 @@ public class CityMenu extends BaseMenu {
                 default -> view.displayError("Digite uma opção válida!");
             }
         }
-    }
-    @Override
-    public void requestDataForCreate() {
-        scanner.nextLine();
-        System.out.println("Digite o nome da cidade: ");
-        String name = scanner.nextLine();
-        System.out.println("Digite o estado (UF): ");
-        String state = scanner.nextLine();
-        System.out.println("Digite a distância desta cidade para a capital do estado: ");
-        String capitalDistanceStr = scanner.nextLine();
-        controller.addCity(name, state, capitalDistanceStr);
-    }
-    @Override
-    public void requestDataForRead() {
-        System.out.println("Digite o id da cidade: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        controller.searchCityById(id);
-    }
-    @Override
-    public void requestDataForUpdate() {
-        System.out.println("Digite o id da cidade: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Digite o novo nome da cidade (Enter para manter): ");
-        String name = scanner.nextLine();
-        System.out.println("Digite o estado (UF) (Enter para manter): ");
-        String state = scanner.nextLine();
-        System.out.println("Digite a distância desta cidade para a capital do estado (Enter para manter): ");
-        String capitalDistanceStr = scanner.nextLine();
-        controller.updateCity(id, name, state, capitalDistanceStr);
-    }
-    @Override
-    public void requestDataForDelete() {
-        System.out.println("Digite o id da cidade: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        controller.deleteCityById(id);
     }
 }

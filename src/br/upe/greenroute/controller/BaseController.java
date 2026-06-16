@@ -22,7 +22,7 @@ public class BaseController {
     protected String isAnyBlank(String... values) {
         for (String value : values) {
             if (value == null || value.isBlank()) {
-                return "Nenhum dado pode estar vazio";
+                return "Nenhum dado pode estar vazio!";
             }
         }
         return null;

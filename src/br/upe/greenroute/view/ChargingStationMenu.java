@@ -1,9 +1,15 @@
 package br.upe.greenroute.view;
+import br.upe.greenroute.controller.ChargingStationController;
+
 import java.util.Scanner;
 public class ChargingStationMenu extends BaseMenu{
-    private Scanner scanner;
-    public ChargingStationMenu(Scanner scanner) {
+    private final Scanner scanner;
+    private final ChargingStationController controller;
+    private final ChargingStationView view;
+    public ChargingStationMenu(Scanner scanner, ChargingStationView chargingStationView, ChargingStationController chargingStationController) {
         this.scanner = scanner;
+        this.view = chargingStationView;
+        this.controller = chargingStationController;
     }
     @Override
     public void showMenu() {
@@ -16,55 +22,22 @@ public class ChargingStationMenu extends BaseMenu{
             System.out.println("2. Atualizar eletroposto");
             System.out.println("3. Buscar eletroposto");
             System.out.println("4. Remover eletroposto");
+            System.out.println("5. Listar eletropostos");
             System.out.println("0. Voltar para o menu principal");
             opcao = scanner.nextInt();
-            if (opcao == 1) {
-                //cadastrar eletroposto
-            } else if (opcao == 2) {
-                //atualizar eletroposto
-            } else if (opcao == 3) {
-                //buscar eletroposto
-            } else if (opcao == 4) {
-                //remover eletroposto
-            } else if (opcao == 0) {
-                System.out.println("Voltando . . .");
-                executando = false;
-            } else {
-                System.out.println("Digite uma opção válida!");
+            scanner.nextLine();
+            switch (opcao) {
+                case 1 -> controller.addChargingStation();
+                case 2 -> controller.updateChargingStation();
+                case 3 -> controller.searchChargingStationById();
+                case 4 -> controller.deleteChargingStationById();
+                case 5 -> controller.listChargingStations();
+                case 0 -> {
+                    System.out.println("Voltando . . .");
+                    executando = false;
+                }
+                default -> System.out.println("Digite uma opção válida!");
             }
         }
-    }
-    @Override
-    public void requestDataForCreate() {
-        System.out.println("Digite o nome do eletroposto: ");
-        String name = scanner.nextLine();
-        System.out.println("Digite a localização (endereço/rodovia): ");
-        String location = scanner.nextLine();
-        System.out.println("Digite o ID da cidade: ");
-        int cityId = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Digite os tipos de conectores disponiveis: ");
-        String availableConnectorsType = scanner.nextLine();
-        System.out.println("Digite a potência do carregador (Kw): ");
-        double chargingPowerKW = scanner.nextDouble();
-        scanner.nextLine();
-        System.out.println("Digite o preço cobrado por kWh: ");
-        double pricePerKWh = scanner.nextDouble();
-        scanner.nextLine();
-        System.out.println("Digite a quantidade de vagas disponiveis: ");
-        int availableVacancies = scanner.nextInt();
-        scanner.nextLine();
-    }
-    @Override
-    public void requestDataForRead() {
-
-    }
-    @Override
-    public void requestDataForUpdate() {
-
-    }
-    @Override
-    public void requestDataForDelete() {
-
     }
 }
