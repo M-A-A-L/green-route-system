@@ -28,11 +28,11 @@ public class CityView extends BaseView{
         return new String[] {name,state,capitalDistanceStr};
     }
     public String[] requestDataForUpdate() {
-        System.out.println("Digite o novo nome da cidade (Enter para manter): ");
+        System.out.println("Digite o novo nome da cidade (Enter para manter o antigo): ");
         String name = scanner.nextLine();
-        System.out.println("Digite o estado (UF) (Enter para manter): ");
+        System.out.println("Digite o estado (UF) (Enter para manter o antigo): ");
         String state = scanner.nextLine();
-        System.out.println("Digite a distância desta cidade para a capital do estado (Enter para manter): ");
+        System.out.println("Digite a distância desta cidade para a capital do estado (Enter para manter o antigo): ");
         String capitalDistanceStr = scanner.nextLine();
         return new String[] {name, state, capitalDistanceStr};
     }

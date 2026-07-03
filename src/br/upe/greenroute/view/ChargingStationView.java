@@ -37,17 +37,17 @@ public class ChargingStationView extends BaseView{
         return new String[] {name, location, cityIdStr, availableConnectorsTypeStr, chargingPowerKWStr, pricePerKWhStr, availableVacanciesStr};
     }
     public String[] requestDataForUpdate() {
-        System.out.println("Digite o novo nome do eletroposto: ");
+        System.out.println("Digite o novo nome do eletroposto (Enter para manter o antigo): ");
         String name = scanner.nextLine();
-        System.out.println("Digite a nova localização (endereço/rodovia): ");
+        System.out.println("Digite a nova localização (endereço/rodovia) (Enter para manter o antigo): ");
         String location = scanner.nextLine();
-        System.out.println("Digite os novos tipos de conectores disponiveis separados por ',': ");
+        System.out.println("Digite os novos tipos de conectores disponiveis separados por ',' (Enter para manter o antigo): ");
         String availableConnectorsTypeStr = scanner.nextLine().replace(";.",",");
-        System.out.println("Digite a nova potência do carregador (Kw): ");
+        System.out.println("Digite a nova potência do carregador (Kw) (Enter para manter o antigo): ");
         String chargingPowerKWStr = scanner.nextLine();
-        System.out.println("Digite o novo preço cobrado por kWh: ");
+        System.out.println("Digite o novo preço cobrado por kWh (Enter para manter o antigo): ");
         String pricePerKWhStr = scanner.nextLine();
-        System.out.println("Digite a nova quantidade de vagas disponiveis: ");
+        System.out.println("Digite a nova quantidade de vagas disponiveis (Enter para manter o antigo): ");
         String availableVacanciesStr = scanner.nextLine();
         return new String[] {name, location, availableConnectorsTypeStr, chargingPowerKWStr, pricePerKWhStr, availableVacanciesStr};
     }

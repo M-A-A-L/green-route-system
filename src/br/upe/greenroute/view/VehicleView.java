@@ -76,31 +76,31 @@ public class VehicleView extends BaseView{
         return new String[] {fuelTankCapacityStr, fuelConsumptionStr, fuelType};
     }
     public String[] requestDataForUpdate() {
-        System.out.println("Digite o novo modelo do veículo: ");
+        System.out.println("Digite o novo modelo do veículo (Enter para manter o antigo): ");
         String model = scanner.nextLine();
-        System.out.println("Digite a nova autonomia máxima: ");
+        System.out.println("Digite a nova autonomia máxima (Enter para manter o antigo): ");
         String maximumAutonomyStr = scanner.nextLine();
-        System.out.println("Digite a nova carga atual da bateria: ");
+        System.out.println("Digite a nova carga atual da bateria (Enter para manter o antigo): ");
         String currentBatteryChargeStr = scanner.nextLine();
-        System.out.println("Digite o novo consumo (kWh/Km): ");
+        System.out.println("Digite o novo consumo (kWh/Km) (Enter para manter o antigo): ");
         String consumptionKWhPerKmStr = scanner.nextLine();
-        System.out.println("Digite o novo tempo de recarga (em minutos): ");
+        System.out.println("Digite o novo tempo de recarga (em minutos) (Enter para manter o antigo): ");
         String fullRechargeTimeStr = scanner.nextLine();
         return new String[] {model, maximumAutonomyStr, currentBatteryChargeStr,consumptionKWhPerKmStr, fullRechargeTimeStr};
     }
     public String[] requestDataForUpdateElectricVehicle() {
-        System.out.println("Digite o novo tipo de conector: ");
+        System.out.println("Digite o novo tipo de conector (Enter para manter o antigo): ");
         String connectorType = scanner.nextLine();
-        System.out.println("Digite o novo tempo de recarga rapida (em minutos) em carregadores de alta potencia: ");
+        System.out.println("Digite o novo tempo de recarga rapida (em minutos) em carregadores de alta potencia (Enter para manter o antigo): ");
         String fastChargingStr = scanner.nextLine();
         return new String[]{connectorType, fastChargingStr};
     }
    public String[] requestDataForUpdateHybridVehicle() {
-        System.out.println("Digite a nova capacidade do tanque de combustivel (em litros): ");
+        System.out.println("Digite a nova capacidade do tanque de combustivel (em litros) (Enter para manter o antigo): ");
         String fuelTankCapacityStr = scanner.nextLine();
-        System.out.println("Digite o novo consumo de combustivel (em Km/l) do motor a combustão: ");
+        System.out.println("Digite o novo consumo de combustivel (em Km/l) do motor a combustão (Enter para manter o antigo): ");
         String fuelConsumptionStr = scanner.nextLine();
-        System.out.println("Digite o novo tipo de combustivel do veiculo: ");
+        System.out.println("Digite o novo tipo de combustivel do veiculo (Enter para manter o antigo): ");
         String fuelType = scanner.nextLine();
         return new String[] {fuelTankCapacityStr, fuelConsumptionStr, fuelType};
     }

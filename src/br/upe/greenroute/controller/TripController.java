@@ -8,6 +8,7 @@ import br.upe.greenroute.view.ChargingStationView;
 import br.upe.greenroute.view.CityView;
 import br.upe.greenroute.view.TripView;
 import br.upe.greenroute.view.VehicleView;
+import java.util.List;
 
 public class TripController {
     private final TripView view;
@@ -56,7 +57,7 @@ public class TripController {
             CityModel stopCity = requestValidStop(currentAutonnomy);
             if (stopCity != null) {
                 view.displayMessage("Você pode reabastecer nesses postos: ");
-                ChargingStationModel[] stations = chargingStationRepository.searchByCityId(stopCity.getId());
+                List<ChargingStationModel> stations = chargingStationRepository.searchByCityId(stopCity.getId());
                 for (ChargingStationModel station : stations) {
                     chargingStationView.displayChargingStation(station);
                 }

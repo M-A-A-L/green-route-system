@@ -5,6 +5,7 @@ import br.upe.greenroute.model.HybridVehicleModel;
 import br.upe.greenroute.model.VehicleModel;
 import br.upe.greenroute.repository.VehicleRepository;
 import br.upe.greenroute.view.VehicleView;
+import java.util.List;
 
 public class VehicleController extends BaseController{
     private final VehicleRepository repository;
@@ -90,7 +91,7 @@ public class VehicleController extends BaseController{
         VehicleModel vehicle = new ElectricVehicleModel(model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime, connectorType, fastCharging);
         repository.add(vehicle);
         view.displayMessage("Veiculo cadastrado no sistema!");
-        view.displayVehicleData(vehicle);
+        view.displayVehicleData((ElectricVehicleModel) vehicle);
         view.Enter();
     }
     private void addHybridVehicle (String model, String maximumAutonomyStr, String currentBatteryChargeStr, String consumeKwhPerKmStr, String fullRechargeTimeStr) {
@@ -140,7 +141,7 @@ public class VehicleController extends BaseController{
         VehicleModel vehicle = new HybridVehicleModel(model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime, fuelTankCapacity, fuelConsumption, fuelType);
         repository.add(vehicle);
         view.displayMessage("Veiculo cadastrado no sistema!");
-        view.displayVehicleData(vehicle);
+        view.displayVehicleData((HybridVehicleModel) vehicle);
         view.Enter();
     }
     public String vehicleType(int id) {
@@ -264,7 +265,7 @@ public class VehicleController extends BaseController{
         boolean result = repository.update(electricVehicle);
         if (result) {
             view.displayMessage("Veiculo atualizado com sucesso!");
-            view.displayVehicleData(electricVehicle);
+            view.displayVehicleData((ElectricVehicleModel) electricVehicle);
         } else {
             view.displayError("veiculo não pode ser atualizado!");
         }
@@ -306,7 +307,7 @@ public class VehicleController extends BaseController{
         boolean result = repository.update(hybridVehicle);
         if (result) {
             view.displayMessage("Veiculo atualizado com sucesso!");
-            view.displayVehicleData(hybridVehicle);
+            view.displayVehicleData((HybridVehicleModel) hybridVehicle);
         } else {
             view.displayError("veiculo não pode ser atualizado!");
         }
@@ -337,8 +338,8 @@ public class VehicleController extends BaseController{
         view.Enter();
     }
     public void listVehicles() {
-        VehicleModel[] vehicles = repository.getVehicles();
-        if (vehicles != null && vehicles.length > 0) {
+        List<VehicleModel> vehicles = repository.getVehicles();
+        if (!vehicles.isEmpty()) {
             for (VehicleModel vehicle : vehicles) {
                 if (vehicle != null) {
                     String type = vehicleType(vehicle.getId());

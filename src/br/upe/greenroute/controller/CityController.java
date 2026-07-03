@@ -4,6 +4,7 @@ import br.upe.greenroute.model.CityModel;
 import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
 import br.upe.greenroute.view.CityView;
+import java.util.List;
 
 public class CityController extends BaseController{
     private final CityRepository repository;
@@ -124,8 +125,8 @@ public class CityController extends BaseController{
         view.Enter();
     }
     public void listCities() {
-        CityModel[] cities = repository.getCities();
-        if (cities != null && cities.length > 0) {
+        List<CityModel> cities = repository.getCities();
+        if (!cities.isEmpty()) {
             for (CityModel city : cities) {
                 if (city != null) {
                     view.displayCity(city);
