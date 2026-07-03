@@ -4,6 +4,7 @@ import br.upe.greenroute.model.ChargingStationModel;
 import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
 import br.upe.greenroute.view.ChargingStationView;
+import java.util.List;
 
 public class ChargingStationController extends BaseController {
     private final ChargingStationRepository repository;
@@ -180,8 +181,8 @@ public class ChargingStationController extends BaseController {
         view.Enter();
     }
     public void listChargingStations() {
-        ChargingStationModel[] stations = repository.getStations();
-        if (stations != null && stations.length > 0) {
+        List<ChargingStationModel> stations = repository.getStations();
+        if (!stations.isEmpty()) {
             for (ChargingStationModel station : stations) {
                 if (station != null) {
                     view.displayChargingStation(station);
