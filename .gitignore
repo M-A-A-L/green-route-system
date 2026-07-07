@@ -34,3 +34,6 @@ gen/
 .project
 .settings/
 bin/
+
+.env
+target/
