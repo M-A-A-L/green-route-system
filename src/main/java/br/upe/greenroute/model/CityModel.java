@@ -1,5 +1,7 @@
 package br.upe.greenroute.model;
 
+import br.upe.greenroute.exceptions.InvalidInputDataException;
+
 public class CityModel {
     private int id;
     private String name;
@@ -21,7 +23,7 @@ public class CityModel {
     }
     public void setId(int id) {
         if (id < 0) {
-            throw new IllegalArgumentException("O ID não pode ser negativo!");
+            throw new InvalidInputDataException("O ID não pode ser negativo!");
         }
         this.id = id;
     }
@@ -30,7 +32,7 @@ public class CityModel {
     }
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome não pode ser nulo ou vazio!");
+            throw new InvalidInputDataException("O nome não pode ser nulo ou vazio!");
         }
         this.name = name;
     }
@@ -39,7 +41,7 @@ public class CityModel {
     }
     public void setState(String state) {
         if (state == null || state.trim().isEmpty()) {
-            throw new IllegalArgumentException("O estado não pode ser nulo ou vazio!");
+            throw new InvalidInputDataException("O estado não pode ser nulo ou vazio!");
         }
         this.state = state;
     }
@@ -48,7 +50,7 @@ public class CityModel {
     }
     public void setCapitalDistance(double capitalDistance) {
         if (capitalDistance < 0) {
-            throw new IllegalArgumentException("A distância até a capital não pode ser negativa!");
+            throw new InvalidInputDataException("A distância até a capital não pode ser negativa!");
         }        this.capitalDistance = capitalDistance;
     }
 }

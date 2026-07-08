@@ -2,7 +2,10 @@ package br.upe.greenroute.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import br.upe.greenroute.exceptions.EntityNotFoundException;
 import br.upe.greenroute.model.ChargingStationModel;
+import jdk.jfr.ContentType;
 
 public class ChargingStationRepository {
 
@@ -24,19 +27,22 @@ public class ChargingStationRepository {
                 return station;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Eletroposto",id);
     }
-    public boolean update(ChargingStationModel updateStation) {
+    public void update(ChargingStationModel updateStation) {
         for (int i = 0; i < stations.size(); i++) {
             if (stations.get(i).getId() == updateStation.getId()) {
                 stations.set(i, updateStation);
-                return true;
+                return;
             }
         }
-        return false;
+        throw new EntityNotFoundException("Eletroposto",id);
     }
-    public boolean deleteById(int id) {
-        return stations.removeIf(station -> station.getId() == id);
+    public void deleteById(int id) {
+        boolean removed = stations.removeIf(station -> station.getId() == id);
+        if (!removed) {
+            throw new EntityNotFoundException("Eletroposto",id);
+        }
     }
     public List<ChargingStationModel> searchByCityId(int cityId) {
         List<ChargingStationModel> stationsFound = new ArrayList<>();
@@ -56,8 +62,11 @@ public class ChargingStationRepository {
         }
         return count;
     }
-    public boolean deleteStationsByCityId(int cityId) {
-        return stations.removeIf(station -> station.getCityId() == cityId);
+    public void deleteStationsByCityId(int cityId) {
+        boolean removed = stations.removeIf(station -> station.getCityId() == cityId);
+        if (!removed) {
+            throw new EntityNotFoundException("Eletroposto",id);
+        }
     }
     public List<ChargingStationModel> getStations() {
         return stations;

@@ -2,6 +2,7 @@ package br.upe.greenroute.view;
 
 import br.upe.greenroute.controller.ChargingStationController;
 import br.upe.greenroute.controller.CityController;
+import br.upe.greenroute.controller.TripController;
 import br.upe.greenroute.controller.VehicleController;
 import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
@@ -11,6 +12,7 @@ import iaService.AIPlannerService;
 import iaService.ConexaoGemini;
 
 import javax.swing.SwingUtilities;
+import java.awt.*;
 
 public class App {
     public static void main(String[] args) {
@@ -24,6 +26,7 @@ public class App {
             CityController cityController = new CityController(cityRepository, viewManager, stationRepository, aiService);
             ChargingStationController stationController = new ChargingStationController(stationRepository, cityRepository, viewManager, aiService);
             VehicleController vehicleController = new VehicleController(vehicleRepository, viewManager, aiService);
+            TripController tripController = new TripController(vehicleRepository, cityRepository, stationRepository, aiService, viewManager);
             telaPrincipal.getBtnAddCity().addActionListener(e -> {
                 cityController.addCity(null);
             });
@@ -73,13 +76,68 @@ public class App {
                 if ("Todos".equals(selected)) vehicleController.filterVehicles();
             });
             telaPrincipal.getBtnFastAddCity().addActionListener(e -> {
-                cityController.fastAddCity();
+                telaPrincipal.getBtnFastAddCity().setEnabled(false);
+                telaPrincipal.getBtnFastAddCity().setText("Processando...");
+                telaPrincipal.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                new Thread(() -> {
+                    try {
+                        cityController.fastAddCity();
+                    }finally {
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+                            telaPrincipal.getBtnFastAddCity().setEnabled(true);
+                            telaPrincipal.getBtnFastAddCity().setText("Adição Rápida");
+                            telaPrincipal.setCursor(Cursor.getDefaultCursor());
+                        });
+                    }
+                }).start();
             });
             telaPrincipal.getBtnFastAddStation().addActionListener(e -> {
-                stationController.fastAddStation();
+                telaPrincipal.getBtnFastAddStation().setEnabled(false);
+                telaPrincipal.getBtnFastAddStation().setText("Processando...");
+                telaPrincipal.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                new Thread(() -> {
+                    try {
+                        stationController.fastAddStation();
+                    }finally {
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+                            telaPrincipal.getBtnFastAddStation().setEnabled(true);
+                            telaPrincipal.getBtnFastAddStation().setText("Adição Rápida");
+                            telaPrincipal.setCursor(Cursor.getDefaultCursor());
+                        });
+                    }
+                }).start();
             });
             telaPrincipal.getBtnFastAddVehicle().addActionListener(e -> {
-                vehicleController.fastAddVehicle();
+                telaPrincipal.getBtnFastAddVehicle().setEnabled(false);
+                telaPrincipal.getBtnFastAddVehicle().setText("Processando...");
+                telaPrincipal.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                new Thread(() -> {
+                    try {
+                        vehicleController.fastAddVehicle();
+                    }finally {
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+                            telaPrincipal.getBtnFastAddVehicle().setEnabled(true);
+                            telaPrincipal.getBtnFastAddVehicle().setText("Adição Rápida");
+                            telaPrincipal.setCursor(Cursor.getDefaultCursor());
+                        });
+                    }
+                }).start();
+            });
+            telaPrincipal.getBtnGenerateRoute().addActionListener(e -> {
+                telaPrincipal.getBtnGenerateRoute().setEnabled(false);
+                telaPrincipal.getBtnGenerateRoute().setText("Em andamento...");
+                telaPrincipal.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                new Thread(() -> {
+                    try {
+                    tripController.executeTripSimulation();
+                    }finally {
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+                            telaPrincipal.getBtnGenerateRoute().setEnabled(true);
+                            telaPrincipal.getBtnGenerateRoute().setText("Gerar Rota");
+                            telaPrincipal.setCursor(Cursor.getDefaultCursor());
+                        });
+                    }
+                }).start();
             });
             telaPrincipal.setVisible(true);
         });

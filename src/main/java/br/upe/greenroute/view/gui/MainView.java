@@ -3,6 +3,7 @@ package br.upe.greenroute.view.gui;
 import br.upe.greenroute.model.*;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 
 import java.util.List;
 import javax.swing.*;
@@ -36,6 +37,9 @@ public class MainView extends JFrame implements IMainGui {
     private JButton btnFastAddCity;
     private JButton btnFastAddStation;
     private JButton btnFastAddVehicle;
+    private JButton btnGenerateRoute;
+    private JLabel lblselectedVehicle;
+    private JLabel lblSelectedCity;
 
     public MainView() {
         $$$setupUI$$$();
@@ -68,6 +72,7 @@ public class MainView extends JFrame implements IMainGui {
         btnStationFilter.setVisible(false);
         txtVehicleSearchInput.setVisible(false);
         btnVehicleFilter.setVisible(false);
+        setupTableListeners();
     }
 
     /**
@@ -79,9 +84,9 @@ public class MainView extends JFrame implements IMainGui {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         tabbedPane1 = new JTabbedPane();
-        mainPanel.add(tabbedPane1, new GridConstraints(0, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
+        mainPanel.add(tabbedPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(4, 4, new Insets(0, 0, 0, 0), -1, -1));
         tabbedPane1.addTab("Cidades", panel1);
@@ -176,6 +181,35 @@ public class MainView extends JFrame implements IMainGui {
         btnFastAddVehicle = new JButton();
         btnFastAddVehicle.setText("Adição Rápida");
         panel3.add(btnFastAddVehicle, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new GridLayoutManager(6, 5, new Insets(0, 0, 0, 0), -1, -1));
+        tabbedPane1.addTab("Planejar Viagem", panel4);
+        btnGenerateRoute = new JButton();
+        btnGenerateRoute.setText("Gerar Rota");
+        panel4.add(btnGenerateRoute, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        label1.setText("\"Para planejar uma viagem selecione um veiculo na aba \"Veículos\" e uma cidade na aba \"Cidades!\"");
+        panel4.add(label1, new GridConstraints(3, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        panel4.add(spacer1, new GridConstraints(5, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        lblselectedVehicle = new JLabel();
+        lblselectedVehicle.setBackground(new Color(-1));
+        lblselectedVehicle.setForeground(new Color(-16777216));
+        lblselectedVehicle.setOpaque(false);
+        lblselectedVehicle.setText("\"Nenhum veículo selecionado\"");
+        panel4.add(lblselectedVehicle, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        lblSelectedCity = new JLabel();
+        lblSelectedCity.setForeground(new Color(-16777216));
+        lblSelectedCity.setText("\"Nenhuma cidade selecionada\"");
+        panel4.add(lblSelectedCity, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        panel4.add(spacer2, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final Spacer spacer3 = new Spacer();
+        panel4.add(spacer3, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final Spacer spacer4 = new Spacer();
+        panel4.add(spacer4, new GridConstraints(2, 0, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        final Spacer spacer5 = new Spacer();
+        panel4.add(spacer5, new GridConstraints(2, 4, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
     }
 
     /**
@@ -488,7 +522,7 @@ public class MainView extends JFrame implements IMainGui {
     @Override
     public String showAiDialog() {
         IAFormDialog dialog = new IAFormDialog(this);
-        dialog.setSize(500,400);
+        dialog.setSize(500, 400);
         dialog.setLocationRelativeTo(this);
         dialog.setTitle("Adição Rápida com IA");
         dialog.clearUserText();
@@ -498,16 +532,73 @@ public class MainView extends JFrame implements IMainGui {
         }
         return null;
     }
+
     public JButton getBtnFastAddCity() {
         return btnFastAddCity;
     }
+
     public JButton getBtnFastAddStation() {
         return btnFastAddStation;
     }
+
     public JButton getBtnFastAddVehicle() {
         return btnFastAddVehicle;
     }
 
+    @Override
+    public int getSelectedCityId() {
+        int row = cityTable.getSelectedRow();
+        if (row != -1) {
+            return (int) cityTable.getValueAt(row, 0);
+        }
+        return -1;
+    }
+    @Override
+    public int getSelectedVehicleId() {
+        int row = vehicleTable.getSelectedRow();
+        if (row != -1) {
+            return (int) vehicleTable.getValueAt(row, 0);
+        }
+        return -1;
+    }
+    @Override
+    public void showTripReportDialog(String report) {
+        JTextArea textArea = new JTextArea(report);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setEditable(false);
+        textArea.setMargin(new Insets(10, 10, 10, 10));
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(500,400));
+        JOptionPane.showMessageDialog(this, scrollPane, "Relatório de Viagem", JOptionPane.PLAIN_MESSAGE);
+    }
+    public JButton getBtnGenerateRoute() {
+        return btnGenerateRoute;
+    }
+    private void setupTableListeners() {
+        cityTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = cityTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    String cityName = cityTable.getValueAt(selectedRow, 1).toString();
+                    lblSelectedCity.setText("Destino: " + cityName);
+                } else {
+                    lblSelectedCity.setText("\"Nenhuma cidade selecionada\"");
+                }
+            }
+        });
+        vehicleTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = vehicleTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    String vehicleModel = vehicleTable.getValueAt(selectedRow, 2).toString();
+                    lblselectedVehicle.setText("Veículo Escolhido: " + vehicleModel);
+                } else {
+                    lblselectedVehicle.setText("\"Nenhum veículo selecionado\"");
+                }
+            }
+        });
+    }
     private void createUIComponents() {
         // TODO: place custom component creation code here
     }

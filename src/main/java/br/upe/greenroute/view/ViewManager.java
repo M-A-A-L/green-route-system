@@ -60,4 +60,13 @@ public class ViewManager {
     public String showAiFormDialog() {
         return mainGui.showAiDialog();
     }
+    public int getSelectedVehicleId() {
+        return mainGui.getSelectedVehicleId();
+    }
+    public int getSelectedCityId() {
+        return mainGui.getSelectedCityId();
+    }
+    public void showTripReport(String report) {
+        mainGui.showTripReportDialog(report);
+    }
 }

@@ -1,5 +1,7 @@
 package br.upe.greenroute.model;
 
+import br.upe.greenroute.exceptions.InvalidInputDataException;
+
 import java.util.List;
 
 public class ChargingStationModel {
@@ -31,7 +33,7 @@ public class ChargingStationModel {
     }
     public void setId(int id) {
         if (id < 0) {
-            throw new IllegalArgumentException("O ID não pode ser negativo!");
+            throw new InvalidInputDataException("O ID não pode ser negativo!");
         }
         this.id = id;
     }    public String getName() {
@@ -39,7 +41,7 @@ public class ChargingStationModel {
     }
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome não pode ser nulo ou vazio!");
+            throw new InvalidInputDataException("O nome não pode ser nulo ou vazio!");
         }
         this.name = name;
     }
@@ -48,7 +50,7 @@ public class ChargingStationModel {
     }
     public void setLocation(String location) {
         if (location == null || location.trim().isEmpty()) {
-            throw new IllegalArgumentException("A localização não pode ser nula ou vazia!");
+            throw new InvalidInputDataException("A localização não pode ser nula ou vazia!");
         }
         this.location = location;
     }
@@ -57,7 +59,7 @@ public class ChargingStationModel {
     }
     public void setCityId(int cityId) {
         if (cityId < 0) {
-            throw new IllegalArgumentException("O ID da cidade não pode ser negativo!");
+            throw new InvalidInputDataException("O ID da cidade não pode ser negativo!");
         }
         this.cityId = cityId;
     }
@@ -66,7 +68,7 @@ public class ChargingStationModel {
     }
     public void setAvailableConnectorsType(List<String> availableConnectorsType) {
         if (availableConnectorsType == null || availableConnectorsType.size() == 0) {
-            throw new IllegalArgumentException("Deve haver pelo menos um tipo de conector disponível!");
+            throw new InvalidInputDataException("Deve haver pelo menos um tipo de conector disponível!");
         }
         this.availableConnectorsType = availableConnectorsType;
     }
@@ -76,7 +78,7 @@ public class ChargingStationModel {
     public void setChargingPowerKW(double chargingPowerKW)
     {
         if (chargingPowerKW <= 0) {
-            throw new IllegalArgumentException("A potência de carregamento deve ser maior que zero!");
+            throw new InvalidInputDataException("A potência de carregamento deve ser maior que zero!");
         }
         this.chargingPowerKW = chargingPowerKW;
     }
@@ -85,7 +87,7 @@ public class ChargingStationModel {
     }
     public void setPricePerKWh(double pricePerKWh) {
         if (pricePerKWh < 0) {
-            throw new IllegalArgumentException("O preço por kWh não pode ser negativo!");
+            throw new InvalidInputDataException("O preço por kWh não pode ser negativo!");
         }        this.pricePerKWh = pricePerKWh;
     }
     public int getAvailableVacancies() {
@@ -93,7 +95,7 @@ public class ChargingStationModel {
     }
     public void setAvailableVacancies(int availableVacancies) {
         if (availableVacancies < 0) {
-            throw new IllegalArgumentException("O número de vagas disponíveis não pode ser negativo!");
+            throw new InvalidInputDataException("O número de vagas disponíveis não pode ser negativo!");
         }
         this.availableVacancies = availableVacancies;
     }

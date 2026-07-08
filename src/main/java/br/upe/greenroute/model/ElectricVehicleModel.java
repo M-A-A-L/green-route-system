@@ -1,5 +1,7 @@
 package br.upe.greenroute.model;
 
+import br.upe.greenroute.exceptions.InvalidInputDataException;
+
 public class ElectricVehicleModel extends VehicleModel {
     private String connectorType;
     private int fastCharging;
@@ -20,7 +22,7 @@ public class ElectricVehicleModel extends VehicleModel {
     }
     public void setConnectorType(String connectorType) {
         if (connectorType == null || connectorType.trim().isEmpty()) {
-            throw new IllegalArgumentException("O tipo de conector não pode ser nulo ou vazio!");
+            throw new InvalidInputDataException("O tipo de conector não pode ser nulo ou vazio!");
         }        this.connectorType = connectorType;
     }
     public int getFastCharging() {
@@ -28,10 +30,10 @@ public class ElectricVehicleModel extends VehicleModel {
     }
     public void setFastCharging(int fastCharging) {
         if (fastCharging <= 0) {
-            throw new IllegalArgumentException("O tempo de carregamento rápido deve ser maior que zero!");
+            throw new InvalidInputDataException("O tempo de carregamento rápido deve ser maior que zero!");
         }
         if (fastCharging >= getFullRechargeTime()) {
-            throw new IllegalArgumentException("O tempo de carregamento rápido deve ser menor que o tempo de recarga total!");
+            throw new InvalidInputDataException("O tempo de carregamento rápido deve ser menor que o tempo de recarga total!");
         }
         this.fastCharging = fastCharging;
     }

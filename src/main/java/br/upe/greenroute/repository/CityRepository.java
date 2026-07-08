@@ -1,5 +1,6 @@
 package br.upe.greenroute.repository;
 
+import br.upe.greenroute.exceptions.EntityNotFoundException;
 import br.upe.greenroute.model.CityModel;
 import java.util.List;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class CityRepository {
                 return city;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Cidade",id);
     }
     public List<CityModel> searchByState(String state) {
         List<CityModel> citiesByState = new ArrayList<>();
@@ -36,17 +37,20 @@ public class CityRepository {
         }
         return citiesByState;
     }
-    public boolean update(CityModel updateCity) {
+    public void update(CityModel updateCity) {
         for (int i = 0; i < cities.size(); i++) {
             if (cities.get(i).getId()==updateCity.getId()) {
                 cities.set(i, updateCity);
-                return true;
+                return;
             }
         }
-        return false;
+        throw new EntityNotFoundException("Cidade",id);
     }
-    public boolean deleteById(int id) {
-        return cities.removeIf(city -> city.getId() == id);
+    public void deleteById(int id) {
+        boolean removed = cities.removeIf(city -> city.getId() == id);
+        if (!removed) {
+            throw new EntityNotFoundException("Cidade",id);
+        }
     }
     public List<CityModel> getCities() {
         return cities;

@@ -27,10 +27,4 @@ public class BaseController {
         }
         return null;
     }
-    public boolean validationAiData(String[] aiData) {
-        if (aiData != null) {
-            return true;
-        }
-        return false;
-    }
 }
