@@ -155,17 +155,6 @@ public class StationFormDialog extends JDialog implements IStationGui {
     }
 
     @Override
-    public void clearTextFields() {
-        txtName.setText("");
-        txtLocation.setText("");
-        txtCityId.setText("");
-        txtConnectors.setText("");
-        txtChargingPower.setText("");
-        txtPrice.setText("");
-        txtVacancies.setText("");
-    }
-
-    @Override
     public String[] getStationInputs() {
         return new String[]{
                 txtName.getText(),

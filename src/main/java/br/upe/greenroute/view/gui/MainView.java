@@ -193,14 +193,18 @@ public class MainView extends JFrame implements IMainGui {
         final Spacer spacer1 = new Spacer();
         panel4.add(spacer1, new GridConstraints(5, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         lblselectedVehicle = new JLabel();
+        var line = BorderFactory.createLineBorder(Color.GRAY, 1);
+        var space = BorderFactory.createEmptyBorder(10, 15, 10, 15);
+        lblselectedVehicle.setBorder(BorderFactory.createCompoundBorder(line, space));
         lblselectedVehicle.setBackground(new Color(-1));
         lblselectedVehicle.setForeground(new Color(-16777216));
         lblselectedVehicle.setOpaque(false);
-        lblselectedVehicle.setText("\"Nenhum veículo selecionado\"");
+        lblselectedVehicle.setText("Nenhum veículo selecionado");
         panel4.add(lblselectedVehicle, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         lblSelectedCity = new JLabel();
+        lblSelectedCity.setBorder(BorderFactory.createCompoundBorder(line, space));
         lblSelectedCity.setForeground(new Color(-16777216));
-        lblSelectedCity.setText("\"Nenhuma cidade selecionada\"");
+        lblSelectedCity.setText("Nenhuma cidade selecionada");
         panel4.add(lblSelectedCity, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
         panel4.add(spacer2, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
@@ -553,6 +557,7 @@ public class MainView extends JFrame implements IMainGui {
         }
         return -1;
     }
+
     @Override
     public int getSelectedVehicleId() {
         int row = vehicleTable.getSelectedRow();
@@ -561,27 +566,32 @@ public class MainView extends JFrame implements IMainGui {
         }
         return -1;
     }
+
     @Override
     public void showTripReportDialog(String report) {
-        JTextArea textArea = new JTextArea(report);
+        String finalReport = report.replace("*", "").replace("#", "");
+        JTextArea textArea = new JTextArea(finalReport);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setEditable(false);
         textArea.setMargin(new Insets(10, 10, 10, 10));
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(500,400));
+        scrollPane.setPreferredSize(new Dimension(500, 400));
         JOptionPane.showMessageDialog(this, scrollPane, "Relatório de Viagem", JOptionPane.PLAIN_MESSAGE);
     }
+
     public JButton getBtnGenerateRoute() {
         return btnGenerateRoute;
     }
+
     private void setupTableListeners() {
         cityTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = cityTable.getSelectedRow();
                 if (selectedRow != -1) {
                     String cityName = cityTable.getValueAt(selectedRow, 1).toString();
-                    lblSelectedCity.setText("Destino: " + cityName);
+                    String cityState = cityTable.getValueAt(selectedRow, 2).toString();
+                    lblSelectedCity.setText("Destino: " + cityName + " - " + cityState);
                 } else {
                     lblSelectedCity.setText("\"Nenhuma cidade selecionada\"");
                 }
@@ -599,6 +609,7 @@ public class MainView extends JFrame implements IMainGui {
             }
         });
     }
+
     private void createUIComponents() {
         // TODO: place custom component creation code here
     }

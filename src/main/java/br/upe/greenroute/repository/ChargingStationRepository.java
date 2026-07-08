@@ -5,7 +5,6 @@ import java.util.List;
 
 import br.upe.greenroute.exceptions.EntityNotFoundException;
 import br.upe.greenroute.model.ChargingStationModel;
-import jdk.jfr.ContentType;
 
 public class ChargingStationRepository {
 

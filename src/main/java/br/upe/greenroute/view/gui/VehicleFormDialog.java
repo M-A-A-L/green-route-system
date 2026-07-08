@@ -185,19 +185,6 @@ public class VehicleFormDialog extends JDialog implements IVehicleGui{
     }
 
     @Override
-    public void clearTextFields() {
-        txtModel.setText("");
-        txtAutonomy.setText("");
-        txtCurrentBatery.setText("");
-        txtConsume.setText("");
-        txtRechargeTime.setText("");
-        txtConnector.setText("");
-        txtFastRechargeTime.setText("");
-        txtFuelCapacity.setText("");
-        txtFuelConsume.setText("");
-        txtFuelType.setText("");
-    }
-    @Override
     public String[] getVehicleInputs() {
         return new String[] {
                 cbVehicleType.getSelectedItem().toString(),

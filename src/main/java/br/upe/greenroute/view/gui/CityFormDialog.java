@@ -115,13 +115,6 @@ public class CityFormDialog extends JDialog implements ICityGui {
     }
 
     @Override
-    public void clearTextFields() {
-        txtName.setText("");
-        txtState.setText("");
-        txtDistance.setText("");
-    }
-
-    @Override
     public String[] getCityInputs() {
         return new String[]{
                 txtName.getText(),

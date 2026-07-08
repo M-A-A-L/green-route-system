@@ -3,7 +3,6 @@ package br.upe.greenroute.controller;
 import br.upe.greenroute.exceptions.AIServiceException;
 import br.upe.greenroute.exceptions.EntityNotFoundException;
 import br.upe.greenroute.exceptions.GreenRouteException;
-import br.upe.greenroute.exceptions.InvalidInputDataException;
 import br.upe.greenroute.model.CityModel;
 import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
@@ -50,23 +49,15 @@ public class CityController extends BaseController{
         String name = data[0];
         String state = data[1].toUpperCase();
         String capitalDistanceStr = data[2];
-        String error;
-        error = isAnyBlank(name, state, capitalDistanceStr);
-        if (error == null) {
-            error = isDouble(capitalDistanceStr, "A distância deve ser um valor decimal");
-        }
-        if (error != null) {
-            view.displayError(error);
-            return;
-        }
         try {
-            double capitalDistance = Double.parseDouble(capitalDistanceStr);
+            isAnyBlank(name, state, capitalDistanceStr);
+            name = trimText(name);
+            state = trimText(state);
+            double capitalDistance = parseCleanDouble(capitalDistanceStr,"A distância da capital deve ser um número válido!");
             CityModel city = new CityModel(name, state, capitalDistance);
             repository.add(city);
             view.displaySuccess("Cidade cadastrada com sucesso!");
             view.refreshCityList(listCities());
-        } catch (NumberFormatException e) {
-            view.displayError("A distância da capital deve ser um número válido!");
         } catch (GreenRouteException e) {
             view.displayError(e.getMessage());
         }
@@ -80,11 +71,9 @@ public class CityController extends BaseController{
         }
         if (searchType.equals("ID")) {
             try {
-                int id = Integer.parseInt(input);
+                int id = parseCleanInt(input,"O ID informado deve ser um número inteiro válido!");
                 CityModel city = repository.searchById(id);
                 view.refreshCityList(List.of(city));
-            } catch (NumberFormatException e) {
-                view.displayError("O ID informado deve ser um número inteiro válido!");
             } catch (EntityNotFoundException e) {
                 view.refreshCityList(List.of());
                 view.displayError(e.getMessage());
@@ -93,10 +82,11 @@ public class CityController extends BaseController{
             }
         } else if (searchType.equals("Estado (UF)")) {
             try {
-                List<CityModel> filteredCities = repository.searchByState(input.toUpperCase());
+                String stateInput = trimText(input).toUpperCase();
+                List<CityModel> filteredCities = repository.searchByState(stateInput);
                 view.refreshCityList(filteredCities);
                 if (filteredCities.isEmpty()) {
-                    view.displayError("Nenhuma cidade encontrada no estado: " + input.toUpperCase());
+                    view.displayError("Nenhuma cidade encontrada no estado: " + stateInput);
                 }
             } catch (GreenRouteException e) {
                 view.displayError(e.getMessage());
@@ -125,13 +115,15 @@ public class CityController extends BaseController{
             String state = datas[1];
             String capitalDistanceStr = datas[2];
             if (name != null && !name.isBlank()) {
+                name = trimText(name);
                 cityToEdit.setName(name);
             }
             if (state != null && !state.isBlank()) {
+                state = trimText(state);
                 cityToEdit.setState(state);
             }
             if (capitalDistanceStr != null && !capitalDistanceStr.isBlank()) {
-                double capitalDistance = Double.parseDouble(capitalDistanceStr);
+                double capitalDistance = parseCleanDouble(capitalDistanceStr, "A distância da capital deve ser um numeral!");
                 if (capitalDistance >= 0) {
                         cityToEdit.setCapitalDistance(capitalDistance);
                     }else {
@@ -141,10 +133,6 @@ public class CityController extends BaseController{
             repository.update(cityToEdit);
             view.displaySuccess("Cidade atualizada com sucesso!");
             view.refreshCityList(listCities());
-        } catch (NumberFormatException e) {
-            view.displayError("A distância da capital deve ser um numeral!");
-        } catch (EntityNotFoundException e) {
-            view.displayError(e.getMessage());
         } catch (GreenRouteException e) {
             view.displayError(e.getMessage());
         } catch (Exception e) {
@@ -161,15 +149,7 @@ public class CityController extends BaseController{
             int id = view.getSelectedId();
             CityModel cityToEdit = repository.searchById(id);
             int stationsCount = stationRepository.countStationsByCityId(id);
-            String message;
-            if (stationsCount > 0) {
-                message = "Tem certeza que deseja excluir a cidade: " + cityToEdit.getName() + "?\n"
-                        + "ATENÇÃO: Esta cidade possui " + stationsCount + " eletroposto(s) "
-                        + "vinculado(s) que também sera/serão excluído(s) do sistema!";
-            } else {
-                message = "Tem certeza que deseja excluir a cidade: " + cityToEdit.getName() + "?\n"
-                        + "(Não há eletropostos vinculados a esta cidade).";
-            }
+            String message = getDelMessage(stationsCount, cityToEdit);
             boolean confirmation = view.confirmAction("Confirmar Exclusão", message);
             if (confirmation) {
                 if (stationsCount > 0) {
@@ -180,14 +160,26 @@ public class CityController extends BaseController{
                 repository.deleteById(id);
                 view.displaySuccess("Cidade deletada com sucesso!");
                 view.refreshCityList(listCities());
-            } catch (EntityNotFoundException e) {
-                view.displayError(e.getMessage());
             } catch (GreenRouteException e) {
                 view.displayError(e.getMessage());
             } catch (Exception e) {
                 view.displayError("Erro inesperado no sistema: "+ e.getCause());
             }
     }
+
+    private static String getDelMessage(int stationsCount, CityModel cityToEdit) {
+        String message;
+        if (stationsCount > 0) {
+            message = "Tem certeza que deseja excluir a cidade: " + cityToEdit.getName() + "?\n"
+                    + "ATENÇÃO: Esta cidade possui " + stationsCount + " eletroposto(s) "
+                    + "vinculado(s) que também sera/serão excluído(s) do sistema!";
+        } else {
+            message = "Tem certeza que deseja excluir a cidade: " + cityToEdit.getName() + "?\n"
+                    + "(Não há eletropostos vinculados a esta cidade).";
+        }
+        return message;
+    }
+
     public List<CityModel> listCities() {
         return repository.getCities();
     }

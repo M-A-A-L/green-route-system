@@ -1,4 +1,4 @@
-package br.upe.greenroute.view;
+package br.upe.greenroute;
 
 import br.upe.greenroute.controller.ChargingStationController;
 import br.upe.greenroute.controller.CityController;
@@ -7,6 +7,8 @@ import br.upe.greenroute.controller.VehicleController;
 import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
 import br.upe.greenroute.repository.VehicleRepository;
+import br.upe.greenroute.view.ViewManager;
+import br.upe.greenroute.view.gui.GreenRouteView;
 import br.upe.greenroute.view.gui.MainView;
 import iaService.AIPlannerService;
 import iaService.ConexaoGemini;
@@ -21,125 +23,128 @@ public class App {
             CityRepository cityRepository = new CityRepository();
             ChargingStationRepository stationRepository = new ChargingStationRepository();
             VehicleRepository vehicleRepository = new VehicleRepository();
-            MainView telaPrincipal = new MainView();
-            ViewManager viewManager = new ViewManager(telaPrincipal);
+            MainView mainView = new MainView();
+            ViewManager viewManager = new ViewManager(mainView);
             CityController cityController = new CityController(cityRepository, viewManager, stationRepository, aiService);
             ChargingStationController stationController = new ChargingStationController(stationRepository, cityRepository, viewManager, aiService);
             VehicleController vehicleController = new VehicleController(vehicleRepository, viewManager, aiService);
             TripController tripController = new TripController(vehicleRepository, cityRepository, stationRepository, aiService, viewManager);
-            telaPrincipal.getBtnAddCity().addActionListener(e -> {
+            mainView.getBtnAddCity().addActionListener(e -> {
                 cityController.addCity(null);
             });
-            telaPrincipal.getBtnUpdtCity().addActionListener(e -> {
+            mainView.getBtnUpdtCity().addActionListener(e -> {
                 cityController.updateCity();
             });
-            telaPrincipal.getBtnDelCity().addActionListener(e -> {
+            mainView.getBtnDelCity().addActionListener(e -> {
                 cityController.deleteCityById();
             });
-            telaPrincipal.getBtnCityFilter().addActionListener(e -> {
+            mainView.getBtnCityFilter().addActionListener(e -> {
                 cityController.filterCities();
             });
-            telaPrincipal.getCbSearchCity().addActionListener(e -> {
-                String selected = (String) telaPrincipal.getCbSearchCity().getSelectedItem();
+            mainView.getCbSearchCity().addActionListener(e -> {
+                String selected = (String) mainView.getCbSearchCity().getSelectedItem();
                 if ("Todos".equals(selected)) cityController.filterCities();
             });
-            telaPrincipal.getBtnAddStation().addActionListener(e -> {
+            mainView.getBtnAddStation().addActionListener(e -> {
                 stationController.addChargingStation(null);
             });
-            telaPrincipal.getBtnUpdStation().addActionListener(e -> {
+            mainView.getBtnUpdStation().addActionListener(e -> {
                 stationController.updateChargingStation();
             });
-            telaPrincipal.getBtnDelStation().addActionListener(e -> {
+            mainView.getBtnDelStation().addActionListener(e -> {
                 stationController.deleteChargingStationById();
             });
-            telaPrincipal.getBtnStationFilter().addActionListener(e -> {
+            mainView.getBtnStationFilter().addActionListener(e -> {
                 stationController.filterChargingStations();
             });
-            telaPrincipal.getCbSearchStation().addActionListener(e -> {
-                String selected = (String) telaPrincipal.getCbSearchStation().getSelectedItem();
+            mainView.getCbSearchStation().addActionListener(e -> {
+                String selected = (String) mainView.getCbSearchStation().getSelectedItem();
                 if ("Todos".equals(selected)) stationController.filterChargingStations();
             });
-            telaPrincipal.getBtnAddVehicle().addActionListener(e -> {
+            mainView.getBtnAddVehicle().addActionListener(e -> {
                 vehicleController.addVehicle(null);
             });
-            telaPrincipal.getBtnUpdVehicle().addActionListener(e -> {
+            mainView.getBtnUpdVehicle().addActionListener(e -> {
                 vehicleController.updateVehicle();
             });
-            telaPrincipal.getBtnDelVehicle().addActionListener(e -> {
+            mainView.getBtnDelVehicle().addActionListener(e -> {
                 vehicleController.deleteVehicleById();
             });
-            telaPrincipal.getBtnVehicleFilter().addActionListener(e -> {
+            mainView.getBtnVehicleFilter().addActionListener(e -> {
                 vehicleController.filterVehicles();
             });
-            telaPrincipal.getCbSearchVehicle().addActionListener(e -> {
-                String selected = (String) telaPrincipal.getCbSearchVehicle().getSelectedItem();
+            mainView.getCbSearchVehicle().addActionListener(e -> {
+                String selected = (String) mainView.getCbSearchVehicle().getSelectedItem();
                 if ("Todos".equals(selected)) vehicleController.filterVehicles();
             });
-            telaPrincipal.getBtnFastAddCity().addActionListener(e -> {
-                telaPrincipal.getBtnFastAddCity().setEnabled(false);
-                telaPrincipal.getBtnFastAddCity().setText("Processando...");
-                telaPrincipal.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            mainView.getBtnFastAddCity().addActionListener(e -> {
+                mainView.getBtnFastAddCity().setEnabled(false);
+                mainView.getBtnFastAddCity().setText("Processando...");
+                mainView.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 new Thread(() -> {
                     try {
                         cityController.fastAddCity();
                     }finally {
                         javax.swing.SwingUtilities.invokeLater(() -> {
-                            telaPrincipal.getBtnFastAddCity().setEnabled(true);
-                            telaPrincipal.getBtnFastAddCity().setText("Adição Rápida");
-                            telaPrincipal.setCursor(Cursor.getDefaultCursor());
+                            mainView.getBtnFastAddCity().setEnabled(true);
+                            mainView.getBtnFastAddCity().setText("Adição Rápida");
+                            mainView.setCursor(Cursor.getDefaultCursor());
                         });
                     }
                 }).start();
             });
-            telaPrincipal.getBtnFastAddStation().addActionListener(e -> {
-                telaPrincipal.getBtnFastAddStation().setEnabled(false);
-                telaPrincipal.getBtnFastAddStation().setText("Processando...");
-                telaPrincipal.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            mainView.getBtnFastAddStation().addActionListener(e -> {
+                mainView.getBtnFastAddStation().setEnabled(false);
+                mainView.getBtnFastAddStation().setText("Processando...");
+                mainView.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 new Thread(() -> {
                     try {
                         stationController.fastAddStation();
                     }finally {
                         javax.swing.SwingUtilities.invokeLater(() -> {
-                            telaPrincipal.getBtnFastAddStation().setEnabled(true);
-                            telaPrincipal.getBtnFastAddStation().setText("Adição Rápida");
-                            telaPrincipal.setCursor(Cursor.getDefaultCursor());
+                            mainView.getBtnFastAddStation().setEnabled(true);
+                            mainView.getBtnFastAddStation().setText("Adição Rápida");
+                            mainView.setCursor(Cursor.getDefaultCursor());
                         });
                     }
                 }).start();
             });
-            telaPrincipal.getBtnFastAddVehicle().addActionListener(e -> {
-                telaPrincipal.getBtnFastAddVehicle().setEnabled(false);
-                telaPrincipal.getBtnFastAddVehicle().setText("Processando...");
-                telaPrincipal.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            mainView.getBtnFastAddVehicle().addActionListener(e -> {
+                mainView.getBtnFastAddVehicle().setEnabled(false);
+                mainView.getBtnFastAddVehicle().setText("Processando...");
+                mainView.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 new Thread(() -> {
                     try {
                         vehicleController.fastAddVehicle();
                     }finally {
                         javax.swing.SwingUtilities.invokeLater(() -> {
-                            telaPrincipal.getBtnFastAddVehicle().setEnabled(true);
-                            telaPrincipal.getBtnFastAddVehicle().setText("Adição Rápida");
-                            telaPrincipal.setCursor(Cursor.getDefaultCursor());
+                            mainView.getBtnFastAddVehicle().setEnabled(true);
+                            mainView.getBtnFastAddVehicle().setText("Adição Rápida");
+                            mainView.setCursor(Cursor.getDefaultCursor());
                         });
                     }
                 }).start();
             });
-            telaPrincipal.getBtnGenerateRoute().addActionListener(e -> {
-                telaPrincipal.getBtnGenerateRoute().setEnabled(false);
-                telaPrincipal.getBtnGenerateRoute().setText("Em andamento...");
-                telaPrincipal.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            mainView.getBtnGenerateRoute().addActionListener(e -> {
+                mainView.getBtnGenerateRoute().setEnabled(false);
+                mainView.getBtnGenerateRoute().setText("Em andamento...");
+                mainView.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 new Thread(() -> {
                     try {
                     tripController.executeTripSimulation();
                     }finally {
                         javax.swing.SwingUtilities.invokeLater(() -> {
-                            telaPrincipal.getBtnGenerateRoute().setEnabled(true);
-                            telaPrincipal.getBtnGenerateRoute().setText("Gerar Rota");
-                            telaPrincipal.setCursor(Cursor.getDefaultCursor());
+                            mainView.getBtnGenerateRoute().setEnabled(true);
+                            mainView.getBtnGenerateRoute().setText("Gerar Rota");
+                            mainView.setCursor(Cursor.getDefaultCursor());
                         });
                     }
                 }).start();
             });
-            telaPrincipal.setVisible(true);
+            GreenRouteView startFrame = new GreenRouteView(() -> {
+                mainView.setVisible(true);
+            });
+            startFrame.setVisible(true);
         });
     }
 }

@@ -1,30 +1,56 @@
 package br.upe.greenroute.controller;
 
+import br.upe.greenroute.exceptions.InvalidInputDataException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class BaseController {
-    protected boolean validDouble (String value) {
-        return (value.matches("^[+-]?(\\d+\\.?\\d*|\\.\\d+)([eE][+-]?\\d+)?$"));
-    }
-    protected String isDouble (String value, String message) {
-        if (!validDouble(value)) {
-            return message;
-        }
-        return null;
-    }
-    protected boolean validInt (String value) {
-        return (value.matches("^[+-]?\\d+$"));
-    }
-    protected String isInt (String value, String message) {
-        if (!validInt(value)) {
-            return message;
-        }
-        return null;
-    }
-    protected String isAnyBlank(String... values) {
+    protected void isAnyBlank(String... values) {
         for (String value : values) {
             if (value == null || value.isBlank()) {
-                return "Nenhum dado pode estar vazio!";
+                throw new InvalidInputDataException("Nenhum dado pode estar vazio!");
             }
         }
-        return null;
+    }
+    protected String trimText(String input) {
+        if (input == null) return "";
+        return input.trim();
+    }
+    protected int parseCleanInt (String value, String message) {
+        String clean = trimText(value).replaceAll("[^0-9]","");
+        if (clean.isEmpty()) {
+            throw new InvalidInputDataException(message);
+        }
+        try {
+            return Integer.parseInt(clean);
+        } catch (NumberFormatException e) {
+            throw new InvalidInputDataException(message);
+        }
+    }
+    protected double parseCleanDouble (String value, String message) {
+        String clean = trimText(value).replace(",",".").replaceAll("[^0-9.]","");
+        if (clean.isEmpty()) {
+            throw new InvalidInputDataException(message);
+        }
+        try {
+            return Double.parseDouble(clean);
+        } catch (NumberFormatException e) {
+            throw new InvalidInputDataException(message);
+        }
+    }
+    protected List<String> cleanStringToList (String value) {
+        List<String> stringList = new ArrayList<>();
+        if (value == null || value.isBlank()) {
+            return stringList;
+        }
+        String[] items = value.split(",");
+        for (String item : items) {
+            String cleanItem = item.trim();
+            if (!cleanItem.isEmpty()) {
+                stringList.add(cleanItem);
+            }
+        }
+        return stringList;
     }
 }

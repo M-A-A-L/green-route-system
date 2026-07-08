@@ -305,7 +305,7 @@
                   <background color="-1"/>
                   <foreground color="-16777216"/>
                   <opaque value="false"/>
-                  <text value="&quot;Nenhum veículo selecionado&quot;"/>
+                  <text value="Nenhum veículo selecionado"/>
                 </properties>
               </component>
               <component id="9a775" class="javax.swing.JLabel" binding="lblSelectedCity">
@@ -314,7 +314,7 @@
                 </constraints>
                 <properties>
                   <foreground color="-16777216"/>
-                  <text value="&quot;Nenhuma cidade selecionada&quot;"/>
+                  <text value="Nenhuma cidade selecionada"/>
                 </properties>
               </component>
               <vspacer id="7fcf0">

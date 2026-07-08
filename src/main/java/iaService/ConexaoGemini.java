@@ -31,7 +31,7 @@ public class ConexaoGemini implements AIPlannerService{
                         + "Use ONLY text (no formatting at all!) to structure the relatorio\n"
                         + "OUTPUT FORMAT:\n"
                         + "Provide a clear, user-friendly itinerary in Brazilian Portuguese using Markdown. Include:\n"
-                        + " - Resumo da viagem (Veiculo e destino,se a autonomia é suficiente, paradas par abastecimento se for eletrico, duração total da viagem)\n"
+                        + " - Resumo da viagem (Veiculo e destino,se a autonomia é suficiente, paradas par abastecimento se for eletrico, especulação da duração total da viagem com base em distância do destino)\n"
                         + "- Condições da Rota (clima estimado e trânsito na região)\n"
                         + " - Recomendações de Parada (Se houver, com a estimativa de tempo)\n"
                         + " - Alertas (se a viagem for arriscada ou exigir atenção)\n\n"

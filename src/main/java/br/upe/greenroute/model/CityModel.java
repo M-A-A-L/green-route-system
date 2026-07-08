@@ -43,6 +43,9 @@ public class CityModel {
         if (state == null || state.trim().isEmpty()) {
             throw new InvalidInputDataException("O estado não pode ser nulo ou vazio!");
         }
+        if (state.length() != 2) {
+            throw new InvalidInputDataException("O estado deve conter exatamente 2 letras");
+        }
         this.state = state;
     }
     public double getCapitalDistance() {

@@ -41,7 +41,6 @@ public class VehicleController extends BaseController{
         }
     }
     public void addVehicle(String[] aiData) {
-        String error;
         String aiType = null;
         if (aiData != null) {
             aiType = aiData[10];
@@ -56,89 +55,49 @@ public class VehicleController extends BaseController{
         String currentBatteryChargeStr = datas[3];
         String consumeKwhPerKmStr = datas[4];
         String fullRechargeTimeStr = datas[5];
-        error = isAnyBlank(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
-        if (error == null) {
-            error = isDouble(maximumAutonomyStr,"A autonomia máxima deve ser um valor valido!");
-        }
-        if (error == null) {
-            error = isDouble(currentBatteryChargeStr, "A carga atual da bateria deve ser um valor valido!");
-        }
-        if (error == null) {
-            error = isDouble(consumeKwhPerKmStr, "O consumo de energia deve ser um valor valido!");
-        }
-        if (error == null) {
-            error = isInt(fullRechargeTimeStr, "O tempo de recarga completa deve ser um valor valido!");
-        }
-        if (error != null) {
-            view.displayError(error);
-            return;
-        }
         try {
-            double maximumAutonomy = Double.parseDouble(maximumAutonomyStr);
-            double currentBatteryCharge = Double.parseDouble(currentBatteryChargeStr);
-            double consumeKwhPerKm = Double.parseDouble(consumeKwhPerKmStr);
-            int fullRechargeTime = Integer.parseInt(fullRechargeTimeStr);
+            isAnyBlank(model, maximumAutonomyStr, currentBatteryChargeStr, consumeKwhPerKmStr, fullRechargeTimeStr);
+            model = trimText(model);
+            double maximumAutonomy = parseCleanDouble(maximumAutonomyStr,"A autonomia máxima deve ser um valor valido!");
+            double currentBatteryCharge = parseCleanDouble(currentBatteryChargeStr, "A carga atual da bateria deve ser um valor valido!");
+            double consumeKwhPerKm = parseCleanDouble(consumeKwhPerKmStr, "O consumo de energia deve ser um valor valido!");
+            int fullRechargeTime = parseCleanInt(fullRechargeTimeStr, "O tempo de recarga completa deve ser um valor valido!");
             switch (type) {
                 case "Elétrico" -> addElectricVehicle(datas, model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime);
                 case "Híbrido" -> addHybridVehicle(datas, model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime);
             }
-        } catch (NumberFormatException e){
-            view.displayError("dados númericos invalidos!");
         } catch (GreenRouteException e) {
             view.displayError(e.getMessage());
         }
     }
     private void addElectricVehicle(String[] data, String model, double maximumAutonomy, double currentBatteryCharge, double consumeKwhPerKm, int fullRechargeTime) {
-        String error;
-        String connectorType = data[6];
+        String connectorType = data[6].toLowerCase();
         String fastChargingStr = data[7];
-
-        error = isAnyBlank(connectorType, fastChargingStr);
-        if (error == null) {
-            error = isInt(fastChargingStr, "O tempo de recarga rápida deve se um valor inteiro!");
-            }
-        if (error != null) {
-            view.displayError(error);
-            return;
-        }
         try {
-            int fastCharging = Integer.parseInt(fastChargingStr);
+            isAnyBlank(connectorType, fastChargingStr);
+            connectorType = trimText(connectorType);
+            int fastCharging = parseCleanInt(fastChargingStr, "O tempo de recarga rápida deve se um valor inteiro!");
             VehicleModel vehicle = new ElectricVehicleModel(model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime, connectorType, fastCharging);
             repository.add(vehicle);
             view.displaySuccess("Veiculo cadastrado no sistema!");
             view.refreshVehicleList(listVehicles());
-        } catch (NumberFormatException e){
-            view.displayError("dados númericos invalidos!");
         } catch (GreenRouteException e) {
             view.displayError(e.getMessage());
         }
     }
     private void addHybridVehicle (String[] data, String model, double maximumAutonomy, double currentBatteryCharge, double consumeKwhPerKm, int fullRechargeTime) {
-        String error;
         String fuelTankCapacityStr = data[8];
         String fuelConsumptionStr = data[9];
-        String fuelType = data[10];
-
-        error = isAnyBlank(fuelTankCapacityStr, fuelConsumptionStr, fuelType);
-        if (error == null) {
-            error = isDouble(fuelTankCapacityStr, "A capacidade do tanque de combustivel deve ser um valor valido!");
-        }
-        if (error == null) {
-            error = isDouble(fuelConsumptionStr, "O consumo de combustivel do motor deve ser um valor valido!");
-        }
-        if (error != null) {
-            view.displayError(error);
-            return;
-        }
+        String fuelType = data[10].toLowerCase();
         try {
-            double fuelTankCapacity = Double.parseDouble(fuelTankCapacityStr);
-            double fuelConsumption = Double.parseDouble(fuelConsumptionStr);
+            isAnyBlank(fuelTankCapacityStr, fuelConsumptionStr, fuelType);
+            fuelType = trimText(fuelType);
+            double fuelTankCapacity = parseCleanDouble(fuelTankCapacityStr, "A capacidade do tanque de combustivel deve ser um valor valido!");
+            double fuelConsumption = parseCleanDouble(fuelConsumptionStr, "O consumo de combustivel do motor deve ser um valor valido!");
             VehicleModel vehicle = new HybridVehicleModel(model, maximumAutonomy, currentBatteryCharge, consumeKwhPerKm, fullRechargeTime, fuelTankCapacity, fuelConsumption, fuelType);
             repository.add(vehicle);
             view.displaySuccess("Veiculo cadastrado no sistema!");
             view.refreshVehicleList(listVehicles());
-        } catch (NumberFormatException e){
-            view.displayError("dados númericos invalidos!");
         } catch (GreenRouteException e) {
             view.displayError(e.getMessage());
         }
@@ -152,11 +111,9 @@ public class VehicleController extends BaseController{
         }
         if (searchType.equals("ID")) {
             try{
-                int id = Integer.parseInt(input);
+                int id = parseCleanInt(input,"O ID informado deve ser um número inteiro válido!");
                 VehicleModel vehicle = repository.searchById(id);
                     view.refreshVehicleList(List.of(vehicle));
-            } catch (NumberFormatException e) {
-                view.displayError("O ID informado deve ser um número inteiro válido!");
             } catch (EntityNotFoundException e) {
                 view.refreshVehicleList(List.of());
                 view.displayError(e.getMessage());
@@ -224,88 +181,65 @@ public class VehicleController extends BaseController{
                 vehicleToEdit.setModel(model);
             }
             if (maximumAutonomyStr != null && !maximumAutonomyStr.isBlank()) {
-                if (validDouble(maximumAutonomyStr)) {
-                    double maximumAutonomy = Double.parseDouble(maximumAutonomyStr);
-                    if (maximumAutonomy > 0) {
-                        vehicleToEdit.setMaximumAutonomy(maximumAutonomy);
-                    } else {
-                        view.displayError("A autonomia máxima deve ser um valor positivo! (Será mantido o valor anterior)");
-                    }
+                double maximumAutonomy = parseCleanDouble(maximumAutonomyStr,"A autonomia máxima deve ser um valor valido! (Será mantido o valor anterior)");
+                if (maximumAutonomy > 0) {
+                    vehicleToEdit.setMaximumAutonomy(maximumAutonomy);
                 } else {
-                    view.displayError("A autonomia máxima deve ser um valor valido! (Será mantido o valor anterior)");
+                    view.displayError("A autonomia máxima deve ser um valor positivo! (Será mantido o valor anterior)");
                 }
             }
             if (currentBatteryChargeStr != null && !currentBatteryChargeStr.isBlank()) {
-                if (validDouble(currentBatteryChargeStr)) {
-                    double currentBatteryCharge = Double.parseDouble(currentBatteryChargeStr);
-                    if (currentBatteryCharge >= 0 && currentBatteryCharge <= 100) {
-                        vehicleToEdit.setCurrentBatteryCharge(currentBatteryCharge);
-                    } else {
-                        view.displayError("A bateria só pode ir de 0% à 100% (Será mantido o valor anterior)");
-                    }
+                double currentBatteryCharge = parseCleanDouble(currentBatteryChargeStr,"A carga atual da bateria deve ser um valor valido! (Será mantido o valor anterior)");
+                if (currentBatteryCharge >= 0 && currentBatteryCharge <= 100) {
+                    vehicleToEdit.setCurrentBatteryCharge(currentBatteryCharge);
                 } else {
-                    view.displayError("A carga atual da bateria deve ser um valor valido! (Será mantido o valor anterior)");
+                    view.displayError("A bateria só pode ir de 0% à 100% (Será mantido o valor anterior)");
                 }
             }
             if (consumeKwhPerKmStr != null && !consumeKwhPerKmStr.isBlank()) {
-                if (validDouble(consumeKwhPerKmStr)) {
-                    double consumeKwhPerKm = Double.parseDouble(consumeKwhPerKmStr);
-                    if (consumeKwhPerKm > 0) {
-                        vehicleToEdit.setConsumeKwhPerKm(consumeKwhPerKm);
-                    } else {
-                        view.displayError("O consumo de kWh por Km deve ser um valor positivo! (Será mantido o valor anterior)");
-                    }
+                double consumeKwhPerKm = parseCleanDouble(consumeKwhPerKmStr,"O consumo de energia deve ser um valor valido! (Será mantido o valor anterior)");
+                if (consumeKwhPerKm > 0) {
+                    vehicleToEdit.setConsumeKwhPerKm(consumeKwhPerKm);
                 } else {
-                    view.displayError("O consumo de energia deve ser um valor valido! (Será mantido o valor anterior)");
+                    view.displayError("O consumo de kWh por Km deve ser um valor positivo! (Será mantido o valor anterior)");
                 }
             }
             if (fullRechargeTimeStr != null && !fullRechargeTimeStr.isBlank()) {
-                if (validInt(fullRechargeTimeStr)) {
-                    int fullrechargeTime = Integer.parseInt(fullRechargeTimeStr);
-                    if (fullrechargeTime > 0) {
-                        vehicleToEdit.setFullRechargeTime(fullrechargeTime);
-                    } else {
-                        view.displayError("O tempo de recarga da bateria deve ser um valor positivo! (Será mantido o valor anterior)");
-                    }
+                int fullrechargeTime = parseCleanInt(fullRechargeTimeStr,"O tempo de recarga completa deve ser um valor valido! (Será mantido o valor anterior)");
+                if (fullrechargeTime > 0) {
+                    vehicleToEdit.setFullRechargeTime(fullrechargeTime);
                 } else {
-                    view.displayError("O tempo de recarga completa deve ser um valor valido! (Será mantido o valor anterior)");
+                    view.displayError("O tempo de recarga da bateria deve ser um valor positivo! (Será mantido o valor anterior)");
                 }
             }
             switch (type) {
                 case "Elétrico" -> updateElectricVehicle(datas, vehicleToEdit);
                 case "Híbrido" -> updateHybridVehicle(datas, vehicleToEdit);
             }
-        } catch (NumberFormatException e) {
-            view.displayError("dados númericos invalidos!");
         } catch (EntityNotFoundException e) {
             view.displayError(e.getMessage());
         }
     }
     private void updateElectricVehicle (String[] data, VehicleModel vehicle) {
         ElectricVehicleModel electricVehicle = (ElectricVehicleModel) vehicle;
-        String connectorType = data[6];
+        String connectorType = data[6].toLowerCase();
         String fastChargingStr = data[7];
         try {
             if (connectorType != null && !connectorType.isBlank()) {
+                connectorType = trimText(connectorType);
                 electricVehicle.setConnectorType(connectorType);
             }
             if (fastChargingStr != null && !fastChargingStr.isBlank()) {
-                if (validInt(fastChargingStr)) {
-                    int fastCharging = Integer.parseInt(fastChargingStr);
-                    if (fastCharging > 0 && fastCharging < electricVehicle.getFullRechargeTime()) {
-                        electricVehicle.setFastCharging(fastCharging);
-                    } else {
-                        view.displayError("O tempo de recarga rápida da bateria deve ser um valor positivo! (Será mantido o valor anterior)");
-                    }
+                int fastCharging = parseCleanInt(fastChargingStr,"O tempo de recarga rápida deve se um valor válido! (Será mantido o valor anterior)");
+                if (fastCharging > 0 && fastCharging < electricVehicle.getFullRechargeTime()) {
+                    electricVehicle.setFastCharging(fastCharging);
                 } else {
-                    view.displayError("O tempo de recarga rápida deve se um valor válido! (Será mantido o valor anterior)");
+                    view.displayError("O tempo de recarga rápida da bateria deve ser um valor positivo! (Será mantido o valor anterior)");
                 }
             }
             repository.update(electricVehicle);
             view.displaySuccess("Veiculo atualizado com sucesso!");
             view.refreshVehicleList(listVehicles());
-        } catch (NumberFormatException e) {
-            view.displayError("dados númericos invalidos!");
         } catch (EntityNotFoundException e) {
             view.displayError(e.getMessage());
         }
@@ -314,33 +248,26 @@ public class VehicleController extends BaseController{
         HybridVehicleModel hybridVehicle = (HybridVehicleModel) vehicle;
         String fuelTankCapacityStr = data[8];
         String fuelConsumptionStr = data[9];
-        String fuelType = data[10];
+        String fuelType = data[10].toLowerCase();
         try {
             if (fuelType != null && !fuelType.isBlank()) {
+                fuelType = trimText(fuelType);
                 hybridVehicle.setFuelType(fuelType);
             }
             if (fuelTankCapacityStr != null && !fuelTankCapacityStr.isBlank()) {
-                if (validDouble(fuelTankCapacityStr)) {
-                    double fuelTankCapacity = Double.parseDouble(fuelTankCapacityStr);
-                    if (fuelTankCapacity > 0) {
-                        hybridVehicle.setFuelTankCapacity(fuelTankCapacity);
-                    } else {
-                        view.displayError("A capacidade do tanque de combustivel deve ser valor positivo! (Será mantido o valor anterior)");
-                    }
+                double fuelTankCapacity = parseCleanDouble(fuelTankCapacityStr,"A capacidade do tanque de combustivel deve ser um valor válido! (Será mantido o valor anterior)");
+                if (fuelTankCapacity > 0) {
+                    hybridVehicle.setFuelTankCapacity(fuelTankCapacity);
                 } else {
-                    view.displayError("A capacidade do tanque de combustivel deve ser um valor válido! (Será mantido o valor anterior)");
+                    view.displayError("A capacidade do tanque de combustivel deve ser valor positivo! (Será mantido o valor anterior)");
                 }
             }
             if (fuelConsumptionStr != null && !fuelConsumptionStr.isBlank()) {
-                if (validDouble(fuelConsumptionStr)) {
-                    double fuelConsumption = Double.parseDouble(fuelConsumptionStr);
-                    if (fuelConsumption > 0) {
-                        hybridVehicle.setFuelConsumption(fuelConsumption);
-                    } else {
-                        view.displayError("O consumo do combustivel deve ser valor positivo! (Será mantido o valor anterior)");
-                    }
+                double fuelConsumption = parseCleanDouble(fuelConsumptionStr,"O consumo de combustivel do motor deve ser um valor valido! (Será mantido o valor anterior)");
+                if (fuelConsumption > 0) {
+                    hybridVehicle.setFuelConsumption(fuelConsumption);
                 } else {
-                    view.displayError("O consumo de combustivel do motor deve ser um valor valido! (Será mantido o valor anterior)");
+                    view.displayError("O consumo do combustivel deve ser valor positivo! (Será mantido o valor anterior)");
                 }
             }
             repository.update(hybridVehicle);
@@ -348,8 +275,6 @@ public class VehicleController extends BaseController{
             view.refreshVehicleList(listVehicles());
             view.displayError("veiculo não pode ser atualizado!");
 
-        } catch (NumberFormatException e) {
-            view.displayError("dados númericos invalidos!");
         } catch (EntityNotFoundException e) {
             view.displayError(e.getMessage());
         }
@@ -372,8 +297,6 @@ public class VehicleController extends BaseController{
             }else {
                 view.displayError("Ação cancelada, o veiculo não foi removido!");
             }
-        } catch (EntityNotFoundException e) {
-            view.displayError(e.getMessage());
         } catch (GreenRouteException e) {
             view.displayError(e.getMessage());
         } catch (Exception e) {

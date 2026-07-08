@@ -67,7 +67,7 @@ public class ChargingStationModel {
         return availableConnectorsType;
     }
     public void setAvailableConnectorsType(List<String> availableConnectorsType) {
-        if (availableConnectorsType == null || availableConnectorsType.size() == 0) {
+        if (availableConnectorsType == null || availableConnectorsType.isEmpty()) {
             throw new InvalidInputDataException("Deve haver pelo menos um tipo de conector disponível!");
         }
         this.availableConnectorsType = availableConnectorsType;
