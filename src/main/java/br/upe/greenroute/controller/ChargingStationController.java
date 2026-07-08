@@ -1,5 +1,8 @@
 package br.upe.greenroute.controller;
 
+import br.upe.greenroute.exceptions.AIServiceException;
+import br.upe.greenroute.exceptions.EntityNotFoundException;
+import br.upe.greenroute.exceptions.GreenRouteException;
 import br.upe.greenroute.model.ChargingStationModel;
 import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
@@ -31,8 +34,12 @@ public class ChargingStationController extends BaseController {
                 } else {
                     view.displayError("A IA não conseguiu compreender o texto informado!");
                 }
+            }  catch (AIServiceException e) {
+                view.displayError("Erro ao processar dados com IA!"+e.getMessage());
+            } catch (GreenRouteException e) {
+                view.displayError(e.getMessage());
             } catch (Exception e) {
-                view.displayError("Erro ao processar dados com IA!, por favor, tente novamente.");
+                view.displayError("Erro inesperado: "+e.getMessage());
             }
         }
     }
@@ -76,10 +83,7 @@ public class ChargingStationController extends BaseController {
             double chargingPowerKW = Double.parseDouble(chargingPowerKWStr);
             double pricePerKWh = Double.parseDouble(pricePerKWhStr);
             int availableVacancies = Integer.parseInt(availableVacanciesStr);
-            if (cityRepository.searchById(cityId) == null) {
-                view.displayError("Não existe nenhuma cidade com o id informado! id: " + cityId);
-                return;
-            }
+            cityRepository.searchById(cityId);
             List<String> availableConnectorsType = Arrays.asList(availableConnectorsTypeStr.trim().split(","));
             ChargingStationModel chargingStation = new ChargingStationModel(name, location, cityId, availableConnectorsType, chargingPowerKW, pricePerKWh, availableVacancies);
             repository.add(chargingStation);
@@ -87,7 +91,9 @@ public class ChargingStationController extends BaseController {
             view.refreshStationList(listChargingStations());
         } catch (NumberFormatException e) {
             view.displayError("dados númericos invalidos!");
-        } catch (IllegalArgumentException e) {
+        } catch (EntityNotFoundException e) {
+            view.displayError(e.getMessage());
+        } catch (GreenRouteException e) {
             view.displayError(e.getMessage());
         }
 
@@ -103,14 +109,14 @@ public class ChargingStationController extends BaseController {
             try {
                 int id = Integer.parseInt(input);
                 ChargingStationModel station = repository.searchById(id);
-                if (station != null) {
-                    view.refreshStationList(List.of(station));
-                }else {
-                    view.refreshStationList(List.of());
-                    view.displayError("Nenhum eletroposto encontrado com o ID: "+id);
-                }
+                view.refreshStationList(List.of(station));
             } catch (NumberFormatException e) {
                 view.displayError("O ID informado deve ser um número inteiro válido!");
+            } catch (EntityNotFoundException e) {
+                view.refreshStationList(List.of());
+                view.displayError(e.getMessage());
+            } catch (GreenRouteException e) {
+                view.displayError(e.getMessage());
             }
         }else if (searchType.equals("Cidade")){
             try {
@@ -122,6 +128,8 @@ public class ChargingStationController extends BaseController {
                 }
             } catch (NumberFormatException e) {
                 view.displayError("O ID informado deve ser um número inteiro válido!");
+            } catch (EntityNotFoundException e) {
+                view.displayError(e.getMessage());
             }
         }
     }
@@ -132,9 +140,9 @@ public class ChargingStationController extends BaseController {
             view.displayError("Por favor, selecione um eletroposto na tabela para editar!");
             return;
         }
-        int id = view.getSelectedId();
-        ChargingStationModel stationToEdit = repository.searchById(id);
-        if (stationToEdit != null) {
+        try {
+            int id = view.getSelectedId();
+            ChargingStationModel stationToEdit = repository.searchById(id);
             String currentConnectors = String.join(",", stationToEdit.getAvailableConnectorsType());
             String[] currentData = new String[]{
                     stationToEdit.getName(),
@@ -156,69 +164,65 @@ public class ChargingStationController extends BaseController {
             String chargingPowerKWStr = datas[4];
             String pricePerKWhStr = datas[5];
             String availableVacanciesStr  = datas[6];
-            try {
-                if (name != null && !name.isBlank()) {
-                    stationToEdit.setName(name);
-                }
-                if (location != null && !location.isBlank()) {
-                    stationToEdit.setLocation(location);
-                }
-                if (availableConnectorsTypeStr != null && !availableConnectorsTypeStr.isBlank()) {
-                    List<String> availableConnectorsType = Arrays.asList(availableConnectorsTypeStr.trim().split(","));
-                    if (availableConnectorsType.size() != 0) {
-                        stationToEdit.setAvailableConnectorsType(availableConnectorsType);
-                    }
-                }
-                if (chargingPowerKWStr != null && !chargingPowerKWStr.isBlank()) {
-                    if(validDouble(chargingPowerKWStr)) {
-                        double chargingPowerKW = Double.parseDouble(chargingPowerKWStr);
-                        if (chargingPowerKW > 0) {
-                            stationToEdit.setChargingPowerKW(chargingPowerKW);
-                        }else {
-                            view.displayError("A potência do carregador deve ser um valor positivo! (Será mantido o valor anterior)");
-                        }
-                    }else {
-                        view.displayError("Potência de carregamento inválida! (Será mantido o valor anterior)");
-                    }
-                }
-                if (pricePerKWhStr != null && !pricePerKWhStr.isBlank()) {
-                    if(validDouble(pricePerKWhStr)) {
-                        double pricePerKWh = Double.parseDouble(pricePerKWhStr);
-                        if (pricePerKWh >= 0) {
-                            stationToEdit.setPricePerKWh(pricePerKWh);
-                        }else {
-                            view.displayError("O preço por quilowatt-hora deve ser no mínimo 0! (Será mantido o valor anterior)");
-                        }
-                    }else {
-                        view.displayError("Preço por kWh inválido! (Será mantido o valor anterior)");
-                    }
-                }
-                if (availableVacanciesStr != null && !availableVacanciesStr.isBlank()) {
-                    if (validInt(availableVacanciesStr)) {
-                        int availableVacancies = Integer.parseInt(availableVacanciesStr);
-                        if (availableVacancies >= 0) {
-                            stationToEdit.setAvailableVacancies(availableVacancies);
-                        }else {
-                            view.displayError("A quantidade de vagas disponíveis deve ser no mínimo 0! (Será mantido o valor anterior)");
-                        }
-                    }else {
-                        view.displayError("Quantidade de vagas inválida! (Será mantido o valor anterior)");
-                    }
-                }
-                boolean result = repository.update(stationToEdit);
-                if (result) {
-                    view.displaySuccess("Eletroposto atualizado com sucesso!");
-                    view.refreshStationList(listChargingStations());
-                } else {
-                    view.displayError("Eletroposto não pode ser atualizado!");
-                }
-            } catch (NumberFormatException e) {
-                view.displayError("dados númericos invalidos!");
-            } catch (IllegalArgumentException e) {
-                view.displayError(e.getMessage());
+            if (name != null && !name.isBlank()) {
+                stationToEdit.setName(name);
             }
-        }else {
-            view.displayError("Eletroposto não encontrado no sistema!");
+            if (location != null && !location.isBlank()) {
+                stationToEdit.setLocation(location);
+            }
+            if (availableConnectorsTypeStr != null && !availableConnectorsTypeStr.isBlank()) {
+                List<String> availableConnectorsType = Arrays.asList(availableConnectorsTypeStr.trim().split(","));
+                if (availableConnectorsType.size() != 0) {
+                    stationToEdit.setAvailableConnectorsType(availableConnectorsType);
+                }
+            }
+            if (chargingPowerKWStr != null && !chargingPowerKWStr.isBlank()) {
+                if(validDouble(chargingPowerKWStr)) {
+                    double chargingPowerKW = Double.parseDouble(chargingPowerKWStr);
+                    if (chargingPowerKW > 0) {
+                        stationToEdit.setChargingPowerKW(chargingPowerKW);
+                    }else {
+                        view.displayError("A potência do carregador deve ser um valor positivo! (Será mantido o valor anterior)");
+                    }
+                }else {
+                    view.displayError("Potência de carregamento inválida! (Será mantido o valor anterior)");
+                }
+            }
+            if (pricePerKWhStr != null && !pricePerKWhStr.isBlank()) {
+                if(validDouble(pricePerKWhStr)) {
+                    double pricePerKWh = Double.parseDouble(pricePerKWhStr);
+                    if (pricePerKWh >= 0) {
+                        stationToEdit.setPricePerKWh(pricePerKWh);
+                    }else {
+                        view.displayError("O preço por quilowatt-hora deve ser no mínimo 0! (Será mantido o valor anterior)");
+                    }
+                }else {
+                    view.displayError("Preço por kWh inválido! (Será mantido o valor anterior)");
+                }
+            }
+            if (availableVacanciesStr != null && !availableVacanciesStr.isBlank()) {
+                if (validInt(availableVacanciesStr)) {
+                    int availableVacancies = Integer.parseInt(availableVacanciesStr);
+                    if (availableVacancies >= 0) {
+                        stationToEdit.setAvailableVacancies(availableVacancies);
+                    }else {
+                        view.displayError("A quantidade de vagas disponíveis deve ser no mínimo 0! (Será mantido o valor anterior)");
+                    }
+                }else {
+                    view.displayError("Quantidade de vagas inválida! (Será mantido o valor anterior)");
+                }
+            }
+            repository.update(stationToEdit);
+            view.displaySuccess("Eletroposto atualizado com sucesso!");
+            view.refreshStationList(listChargingStations());
+        } catch (NumberFormatException e) {
+            view.displayError("dados númericos invalidos!");
+        } catch (EntityNotFoundException e) {
+            view.displayError(e.getMessage());
+        } catch (GreenRouteException e) {
+            view.displayError(e.getMessage());
+        } catch (Exception e) {
+            view.displayError("Erro inesperado: "+e.getMessage());
         }
     }
     public void deleteChargingStationById() {
@@ -227,23 +231,22 @@ public class ChargingStationController extends BaseController {
             view.displayError("Por favor, selecione um eletroposto na tabela para excluir!");
             return;
         }
-        int id = view.getSelectedId();
-        ChargingStationModel stationToDelete = repository.searchById(id);
-        if (stationToDelete != null) {
-            String message = "Tem certeza que deseja excluir o eletroposto: " + stationToDelete.getName() + "?";
-            boolean confirmation = view.confirmAction("Confirmar Exclusão", message);
-            if (confirmation) {
-                try {
-                    if (repository.deleteById(id)) {
-                        view.displaySuccess("Eletroposto deletado com sucesso!");
-                        view.refreshStationList(listChargingStations());
-                    }
-                } catch (Exception e) {
-                    view.displayError("Erro ao tentar excluir o eletroposto: " + e.getMessage());
+        try {
+            int id = view.getSelectedId();
+            ChargingStationModel stationToDelete = repository.searchById(id);
+                String message = "Tem certeza que deseja excluir o eletroposto: " + stationToDelete.getName() + "?";
+                boolean confirmation = view.confirmAction("Confirmar Exclusão", message);
+                if (confirmation) {
+                    repository.deleteById(id);
+                    view.displaySuccess("Eletroposto deletado com sucesso!");
+                    view.refreshStationList(listChargingStations());
                 }
-            }
-        } else {
-            view.displayError("Eletroposto não encontrado no sistema!");
+        } catch (EntityNotFoundException e) {
+            view.displayError(e.getMessage());
+        } catch (GreenRouteException e) {
+            view.displayError(e.getMessage());
+        } catch (Exception e) {
+            view.displayError("Erro inesperado: "+e.getMessage());
         }
     }
     public List<ChargingStationModel> listChargingStations() {

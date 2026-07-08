@@ -1,5 +1,9 @@
 package br.upe.greenroute.controller;
 
+import br.upe.greenroute.exceptions.AIServiceException;
+import br.upe.greenroute.exceptions.EntityNotFoundException;
+import br.upe.greenroute.exceptions.GreenRouteException;
+import br.upe.greenroute.exceptions.InvalidInputDataException;
 import br.upe.greenroute.model.CityModel;
 import br.upe.greenroute.repository.ChargingStationRepository;
 import br.upe.greenroute.repository.CityRepository;
@@ -29,8 +33,12 @@ public class CityController extends BaseController{
                }else {
                    view.displayError("A IA não conseguiu compreender o texto informado!");
                }
+            } catch (AIServiceException e) {
+                view.displayError("Erro ao processar dados com IA!"+e.getMessage());
+            } catch (GreenRouteException e) {
+                view.displayError(e.getMessage());
             } catch (Exception e) {
-                view.displayError("Erro ao processar dados com IA!, por favor, tente novamente.");
+                view.displayError("Erro inesperado: "+e.getMessage());
             }
         }
     }
@@ -57,9 +65,9 @@ public class CityController extends BaseController{
             repository.add(city);
             view.displaySuccess("Cidade cadastrada com sucesso!");
             view.refreshCityList(listCities());
-        }catch (NumberFormatException e) {
-            view.displayError("A distância da capital deve ser um numeral!");
-        } catch (IllegalArgumentException e) {
+        } catch (NumberFormatException e) {
+            view.displayError("A distância da capital deve ser um número válido!");
+        } catch (GreenRouteException e) {
             view.displayError(e.getMessage());
         }
     }
@@ -74,20 +82,24 @@ public class CityController extends BaseController{
             try {
                 int id = Integer.parseInt(input);
                 CityModel city = repository.searchById(id);
-                if (city != null) {
-                    view.refreshCityList(List.of(city));
-                } else{
-                    view.refreshCityList(List.of());
-                    view.displayError("Nenhuma cidade encontrada com o ID: "+id);
-                }
+                view.refreshCityList(List.of(city));
             } catch (NumberFormatException e) {
                 view.displayError("O ID informado deve ser um número inteiro válido!");
+            } catch (EntityNotFoundException e) {
+                view.refreshCityList(List.of());
+                view.displayError(e.getMessage());
+            } catch (GreenRouteException e) {
+                view.displayError(e.getMessage());
             }
         } else if (searchType.equals("Estado (UF)")) {
-            List<CityModel> filteredCities = repository.searchByState(input.toUpperCase());
-            view.refreshCityList(filteredCities);
-            if (filteredCities.isEmpty()) {
-                view.displayError("Nenhuma cidade encontrada no estado: "+ input.toUpperCase());
+            try {
+                List<CityModel> filteredCities = repository.searchByState(input.toUpperCase());
+                view.refreshCityList(filteredCities);
+                if (filteredCities.isEmpty()) {
+                    view.displayError("Nenhuma cidade encontrada no estado: " + input.toUpperCase());
+                }
+            } catch (GreenRouteException e) {
+                view.displayError(e.getMessage());
             }
         }
     }
@@ -97,9 +109,9 @@ public class CityController extends BaseController{
             view.displayError("Por favor, selecione uma cidade na tabela para editar!");
             return;
         }
-        int id = view.getSelectedId();
-        CityModel cityToEdit = repository.searchById(id);
-        if (cityToEdit != null) {
+        try {
+            int id = view.getSelectedId();
+            CityModel cityToEdit = repository.searchById(id);
             String[] currentData = new String[] {
                     cityToEdit.getName(),
                     cityToEdit.getState(),
@@ -118,30 +130,26 @@ public class CityController extends BaseController{
             if (state != null && !state.isBlank()) {
                 cityToEdit.setState(state);
             }
-            try {
-                if (capitalDistanceStr != null && !capitalDistanceStr.isBlank()) {
-                    double capitalDistance = Double.parseDouble(capitalDistanceStr);
-                    if (capitalDistance >= 0) {
+            if (capitalDistanceStr != null && !capitalDistanceStr.isBlank()) {
+                double capitalDistance = Double.parseDouble(capitalDistanceStr);
+                if (capitalDistance >= 0) {
                         cityToEdit.setCapitalDistance(capitalDistance);
                     }else {
                         view.displayError("A distância da capital deve ser maior que zero! (Será mantido o valor anterior)");
                     }
                 }
-                boolean result = repository.update(cityToEdit);
-                if (result) {
-                    view.displaySuccess("Cidade atualizada com sucesso!");
-                    view.refreshCityList(listCities());
-                } else {
-                    view.displayError("Cidade não pode ser atualizada!");
-                }
-            } catch (NumberFormatException e) {
-                view.displayError("A distância da capital deve ser um numeral!");
-            } catch (IllegalArgumentException e) {
-                view.displayError(e.getMessage());
+            repository.update(cityToEdit);
+            view.displaySuccess("Cidade atualizada com sucesso!");
+            view.refreshCityList(listCities());
+        } catch (NumberFormatException e) {
+            view.displayError("A distância da capital deve ser um numeral!");
+        } catch (EntityNotFoundException e) {
+            view.displayError(e.getMessage());
+        } catch (GreenRouteException e) {
+            view.displayError(e.getMessage());
+        } catch (Exception e) {
+            view.displayError("Erro inesperado no sistema: "+e.getMessage());
             }
-        }else {
-            view.displayError("Cidade não encontrada no sistema!");
-        }
     }
     public void deleteCityById() {
         int selectedRow = view.getSelectedRow();
@@ -149,9 +157,9 @@ public class CityController extends BaseController{
             view.displayError("Por favor, selecione uma cidade na tabela para excluir!");
             return;
         }
-        int id = view.getSelectedId();
-        CityModel cityToEdit = repository.searchById(id);
-        if (cityToEdit != null) {
+        try {
+            int id = view.getSelectedId();
+            CityModel cityToEdit = repository.searchById(id);
             int stationsCount = stationRepository.countStationsByCityId(id);
             String message;
             if (stationsCount > 0) {
@@ -164,25 +172,21 @@ public class CityController extends BaseController{
             }
             boolean confirmation = view.confirmAction("Confirmar Exclusão", message);
             if (confirmation) {
-                try {
-                    if (stationsCount > 0) {
-                        if (stationRepository.deleteStationsByCityId(id)) {
-                            view.refreshStationList(stationRepository.getStations());
-                        }else {
-                            view.displayError("Não foi possivel deletar os eletropostos!");
-                        }
+                if (stationsCount > 0) {
+                    stationRepository.deleteStationsByCityId(id);
+                    view.refreshStationList(stationRepository.getStations());
                     }
-                    if (repository.deleteById(id)) {
-                        view.displaySuccess("Cidade deletada com sucesso!");
-                        view.refreshCityList(listCities());
-                    }
-                } catch (Exception e) {
-                    view.displayError("Erro ao tentar excluir a cidade: " + e.getMessage());
                 }
+                repository.deleteById(id);
+                view.displaySuccess("Cidade deletada com sucesso!");
+                view.refreshCityList(listCities());
+            } catch (EntityNotFoundException e) {
+                view.displayError(e.getMessage());
+            } catch (GreenRouteException e) {
+                view.displayError(e.getMessage());
+            } catch (Exception e) {
+                view.displayError("Erro inesperado no sistema: "+ e.getCause());
             }
-        } else {
-            view.displayError("Cidade não encontrada no sistema!");
-        }
     }
     public List<CityModel> listCities() {
         return repository.getCities();

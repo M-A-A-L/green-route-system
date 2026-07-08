@@ -1,5 +1,6 @@
 package br.upe.greenroute.repository;
 
+import br.upe.greenroute.exceptions.EntityNotFoundException;
 import br.upe.greenroute.model.VehicleModel;
 import java.util.List;
 import java.util.ArrayList;
@@ -25,20 +26,23 @@ public class VehicleRepository {
                 return vehicle;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Veículo",id);
     }
 
-    public boolean update(VehicleModel updateVehicle) {
+    public void update(VehicleModel updateVehicle) {
         for (int i = 0; i < vehicles.size(); i++) {
             if (vehicles.get(i).getId() == updateVehicle.getId()) {
                 vehicles.set(i, updateVehicle);
-                return true;
+                return;
             }
         }
-        return false;
+        throw new EntityNotFoundException("Veículo",id);
     }
-    public boolean deleteById(int id) {
-        return vehicles.removeIf(vehicle -> vehicle.getId() == id);
+    public void deleteById(int id) {
+        boolean removed = vehicles.removeIf(vehicle -> vehicle.getId() == id);
+        if (!removed) {
+            throw new EntityNotFoundException("Veículo",id);
+        }
     }
     public List<VehicleModel> getVehicles() {
         return vehicles;

@@ -22,4 +22,7 @@ public interface IMainGui {
     void updateVehicleTable(List<VehicleModel> vehicles);
     String[] showVehicleFormDialog(String type, String[] existingData);
     String showAiDialog();
+    int getSelectedVehicleId();
+    int getSelectedCityId();
+    void showTripReportDialog(String report);
 }

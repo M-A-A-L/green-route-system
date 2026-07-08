@@ -1,5 +1,7 @@
 package br.upe.greenroute.model;
 
+import br.upe.greenroute.exceptions.InvalidInputDataException;
+
 public abstract class VehicleModel {
     protected int id;
     protected String model;
@@ -25,7 +27,7 @@ public abstract class VehicleModel {
     }
     public void setId(int id) {
         if (id < 0) {
-            throw new IllegalArgumentException("O ID não pode ser negativo!");
+            throw new InvalidInputDataException("O ID não pode ser negativo!");
         }
         this.id = id;
     }
@@ -34,7 +36,7 @@ public abstract class VehicleModel {
     }
     public void setModel(String model) {
         if (model == null || model.trim().isEmpty()) {
-            throw new IllegalArgumentException("O modelo não pode ser nulo ou vazio!");
+            throw new InvalidInputDataException("O modelo não pode ser nulo ou vazio!");
         }
         this.model = model;
     }
@@ -43,7 +45,7 @@ public abstract class VehicleModel {
     }
     public void setMaximumAutonomy(double maximumAutonomy) {
         if (maximumAutonomy <= 0) {
-            throw new IllegalArgumentException("A autonomia máxima deve ser maior que zero!");
+            throw new InvalidInputDataException("A autonomia máxima deve ser maior que zero!");
         }
         this.maximumAutonomy = maximumAutonomy;
     }
@@ -52,7 +54,7 @@ public abstract class VehicleModel {
     }
     public void setCurrentBatteryCharge(double currentBatteryCharge) {
         if (currentBatteryCharge < 0 || currentBatteryCharge > 100) {
-            throw new IllegalArgumentException("A carga atual da bateria deve estar entre 0 e 100!");
+            throw new InvalidInputDataException("A carga atual da bateria deve estar entre 0 e 100!");
         }
         this.currentBatteryCharge = currentBatteryCharge;
     }
@@ -61,7 +63,7 @@ public abstract class VehicleModel {
     }
     public void setConsumeKwhPerKm(double consumeKwhPerKm) {
         if (consumeKwhPerKm <= 0) {
-            throw new IllegalArgumentException("O consumo por km deve ser maior que zero!");
+            throw new InvalidInputDataException("O consumo por km deve ser maior que zero!");
         }
         this.consumeKwhPerKm = consumeKwhPerKm;
     }
@@ -70,7 +72,7 @@ public abstract class VehicleModel {
     }
     public void setFullRechargeTime(int fullRechargeTime) {
         if (fullRechargeTime <= 0) {
-            throw new IllegalArgumentException("O tempo de recarga total deve ser maior que zero!");
+            throw new InvalidInputDataException("O tempo de recarga total deve ser maior que zero!");
         }
         this.fullRechargeTime = fullRechargeTime;
     }

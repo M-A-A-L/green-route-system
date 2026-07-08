@@ -1,5 +1,7 @@
 package br.upe.greenroute.model;
 
+import br.upe.greenroute.exceptions.InvalidInputDataException;
+
 public class HybridVehicleModel extends VehicleModel {
     private double fuelTankCapacity;
     private double fuelConsumption;
@@ -21,7 +23,7 @@ public class HybridVehicleModel extends VehicleModel {
     }
     public void setFuelTankCapacity(double fuelTankCapacity) {
         if (fuelTankCapacity <= 0) {
-            throw new IllegalArgumentException("A capacidade do tanque de combustível deve ser maior que zero!");
+            throw new InvalidInputDataException("A capacidade do tanque de combustível deve ser maior que zero!");
         }
         this.fuelTankCapacity = fuelTankCapacity;
     }
@@ -30,7 +32,7 @@ public class HybridVehicleModel extends VehicleModel {
     }
     public void setFuelConsumption(double fuelConsumption) {
         if (fuelConsumption <= 0) {
-            throw new IllegalArgumentException("O consumo de combustível deve ser maior que zero!");
+            throw new InvalidInputDataException("O consumo de combustível deve ser maior que zero!");
         }
         this.fuelConsumption = fuelConsumption;
     }
@@ -39,7 +41,7 @@ public class HybridVehicleModel extends VehicleModel {
     }
     public void setFuelType(String fuelType) {
         if (fuelType == null || fuelType.trim().isEmpty()) {
-            throw new IllegalArgumentException("O tipo de combustível não pode ser nulo ou vazio!");
+            throw new InvalidInputDataException("O tipo de combustível não pode ser nulo ou vazio!");
         }
         this.fuelType = fuelType;
     }
